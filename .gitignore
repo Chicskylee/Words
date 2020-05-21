@@ -3,8 +3,6 @@
 .init.conf
 .config.conf
 
-# development record
-README.md
 
 
 # python auto files
@@ -13,7 +11,8 @@ __pycache__/
 *.pyc
 *.pyo
 
+
+
 # default files
 own/
 data/
-
