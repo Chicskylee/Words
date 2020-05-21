@@ -7,7 +7,8 @@
 # 测试平台：QPython3
 # 其他依赖：无
 # =================================
-from pprint import pformat
+import shutil
+import pprint
 # ---------------------------------
 from . import log
 from . import collect
@@ -20,6 +21,13 @@ from .independent import compatible
 import logging
 logger = logging.getLogger('main.config')
 # =================================
+
+# 禁止删除的数据库名称
+BAN_DELETE_NAMES = ['[退出]', '[新建库]', '[删除库]',
+                    'PUBLIC', 'TEMP']
+
+
+
 # 初始化配置文件的相关操作
 
 # {'user':{'user_name':'xxx',
@@ -29,7 +37,7 @@ logger = logging.getLogger('main.config')
 #  'datas':[(database_name, database_name_time),
 #           ]}
 def initialize_init():
-    filename = path.user.init_filename()
+    filename = path.own.init_filename()
     if path.path_exist(filename):
         return True
     print('不存在用户设置，请按流程配置相应信息：')
@@ -48,9 +56,13 @@ def initialize_init():
     init['user']['user_pwd'] = user_pwd
     init['user']['user_email'] = user_email
     init['user']['init_time'] = init_time
-    database_names = ['[退出]', '[新建库]','[删除库]',
-        'PUBLIC', 'Master', 'CET6', 'CET4',
-        'GRE', 'LELTS', 'TEMP']
+    # PUBLIC：所有生词的汇总生词本
+    # Master：研究生入学考试生词本
+    # CET6：大学英语6级生词本
+    # CET4：大学英语4级生词本
+    # GRE：GRE生词本
+    # TEMP：临时存储生词本
+    database_names = ['[退出]', '[新建库]','[删除库]', 'PUBLIC', 'TEMP']
     for database_name in database_names:
         detail_time = public.get_detail_time_now()
         # 数据库名称，数据库创建时间，数据库中单词量
@@ -75,13 +87,13 @@ def del_init():
 # 写入初始化配置字典，具体配置信息请参考path模块
 # 注意：字典写入文件'~/Words/data/config/init.conf'
 def write_init(init):
-    filename = path.user.init_filename()
+    filename = path.own.init_filename()
     public.write_pickle(init, filename)
 
 
 # 读取初始化配置
 def read_init():
-    filename = path.user.init_filename()
+    filename = path.own.init_filename()
     if not path.path_exist(filename):
         initialize_init()
     return public.read_pickle(filename)
@@ -176,10 +188,7 @@ def add_database_name(database_name, words_amount=0):
 def delete_database_name(database_name):
     database_names = get_database_names()
     # 禁止删除的数据库名称
-    ban_delete_names = ['[退出]', '[新建库]', '[删除库]',
-    'PUBLIC', 'Master', 'CET6', 'CET4',
-    'GRE', 'LELTS', 'TEMP',]
-    if database_name in ban_delete_names:
+    if database_name in BAN_DELETE_NAMES:
         logger.info('禁止删除数据库：{}'.format(database_name))
         return False
     elif database_name in database_names:
@@ -222,7 +231,7 @@ def print_database_names(database_names=None):
 # 配置文件的初始化值形式，生成配置字典
 # 返回：一个字典
 def initialize_config(database_name='TEMP'):
-    filename = path.user.config_filename()
+    filename = path.own.config_filename()
     if path.path_exist(filename):
         logger.info('配置信息已存在，修改请用set_config函数')
         return True
@@ -252,14 +261,14 @@ def initialize_config(database_name='TEMP'):
     config['database']['last_time'] = last_time
     # 数据库单词数，初始值为0
     config['database']['words_total'] = get_database_words_amount(database_name)
-    logger.info('已生成初始化配置：\n{}'.format(pformat(config)))
+    logger.debug('已生成初始化配置：\n{}'.format(pprint.pformat(config)))
     public.write_pickle(config, filename)
     return True
 
 
 # 设置配置字典
 def set_config(database_name='TEMP'):
-    filename = path.user.config_filename()
+    filename = path.own.config_filename()
     if not path.path_exist(filename):
         logger.info('配置信息不存在，创建请用initialize_config函数')
         return None
@@ -289,7 +298,7 @@ def set_config(database_name='TEMP'):
     config['database']['last_time'] = last_time
     # 数据库单词数，初始值为0
     config['database']['words_total'] = get_database_words_amount(database_name)
-    logger.debug('已生成配置字典：\n{}'.format(pformat(config)))
+    logger.debug('已生成配置字典：\n{}'.format(pprint.pformat(config)))
     return config
 
 
@@ -297,8 +306,8 @@ def set_config(database_name='TEMP'):
 # config：配置字典
 # 注意：字典写入文件'~/Words/data/config/config.conf'
 def write_config(config):
-    logger.debug('写入配置：\n{}'.format(pformat(config)))
-    filename = path.user.config_filename()
+    logger.debug('写入配置：\n{}'.format(pprint.pformat(config)))
+    filename = path.own.config_filename()
     public.write_pickle(config, filename)
     logger.info('配置已写入文件')
     # 配置文件写入完毕，接下来更新用户初始信息
@@ -321,13 +330,13 @@ def write_config(config):
 #              'words_total':xxx},
 #  }
 def read_config():
-    filename = path.user.config_filename()
+    filename = path.own.config_filename()
     if not path.path_exist(filename):
         initialize_config(database_name='TEMP')
     config = public.read_pickle(filename)
     if not config:
         raise ValueError('配置文件中的字典是空的！')
-    logger.debug('当前配置：\n{}'.format(pformat(config)))
+    logger.debug('当前配置：\n{}'.format(pprint.pformat(config)))
     return config
 
 
@@ -383,11 +392,10 @@ def get_database_name():
 # 获取当前数据库中的单词总条数
 def get_database_words_total():
     config = read_config()
-    logger.debug('当前配置：\n{}'.format(pformat(config)))
+    logger.debug('当前配置：\n{}'.format(pprint.pformat(config)))
     words_total = config['database']['words_total']
     logger.info('当前配置文件中的单词量：{}'.format(words_total))
     return words_total
-
 
 
 # 获取初始化配置信息的init_time
@@ -412,7 +420,6 @@ def create_config(choice_create=True):
     return config
 
 
-
 # 在主程序中给用户打印配置文件的提示内容
 # n：一行内容的屏幕总宽度
 def print_config(n=45):
@@ -430,7 +437,6 @@ def print_config(n=45):
 
 # =================================
 # 数据库文件的相关操作
-# 这个没心情写，删自己库的事，自己手动删除，自己负责
 
 def delete_database(database_name):
     # 删除一个数据库
@@ -438,9 +444,25 @@ def delete_database(database_name):
     print('注意：该操作将删除数据库，且无法恢复！')
     choice = collect.get_input('删除库{}中所有数据(确认*)'.format(database_name))
     if choice == '*':
+        database_path = path.user.word(database_name)
         # 要求用户验证密码才可以继续删除
-        pass
-    return False
+        if database_name not in BAN_DELETE_NAMES:
+            logger.info('用户删除数据库目录及其文件：{}'.format(database_path))
+            shutil.rmtree(database_path)
+            return True
+        else:
+            # 程序不应该走到这里，
+            # 如果程序走到这里了，说明历史上的修改导致用户可以删除禁止删除的数据库了
+            print('禁止删除数据库：{}'.format(database_name))
+            raise IndexError('程序不应该走到这里，请通知开发者！')
+    else:
+        return False
+
+
+# 将删除的数据库中的单词添加同步到综合数据库
+def synchronize_words(database_name):
+    pass
+
 
 # =================================
 
@@ -462,7 +484,7 @@ def main(enabled, debug=False):
     if enabled != '*':
         return False
     # 引导用户操作配置文件和数据库文件
-    compatible.clear_screen(debug=debug)
+    compatible.clear_screen(debug=public.DEBUG)
     db_names = get_database_names()
     print_database_names(database_names=db_names)
     current_db_name = get_database_name()
@@ -474,30 +496,30 @@ def main(enabled, debug=False):
         index = -1
     if (index >= len(db_names)) or (index < 0):
         logger.info('用户修改数据库名称时胡乱输入了内容：{}'.format(index))
-        compatible.clear_screen(debug=debug)
+        compatible.clear_screen(debug=public.DEBUG)
         print('选择错误，未更改数据库')
         print_config()
         return False
     # 用户输入了正确的序号，才应该进入接下来的代码
     logger.info('用户选择：{}'.format(db_names[index]))
     if db_names[index] == current_db_name:
-        compatible.clear_screen(debug=debug)
+        compatible.clear_screen(debug=public.DEBUG)
         print_config()
         return False
     elif db_names[index] == '[退出]':
-        compatible.clear_screen(debug=debug)
+        compatible.clear_screen(debug=public.DEBUG)
         print_config()
         return False
     elif db_names[index] not in ['[退出]', '[新建库]', '[删除库]']:
         # 将数据库设置为用户选择的数据库
         set_database_name(database_name=db_names[index])
-        compatible.clear_screen(debug=debug)
+        compatible.clear_screen(debug=public.DEBUG)
         print_config()
         return True
     elif db_names[index] == '[新建库]':
         logger.info('用户要新建数据库')
         create_config(choice_create=True)
-        compatible.clear_screen(debug=debug)
+        compatible.clear_screen(debug=public.DEBUG)
         print_config()
         return True
     elif db_names[index] == '[删除库]':
@@ -511,35 +533,47 @@ def main(enabled, debug=False):
             # 将配置文件指向临时数据库：'TEMP'
             set_database_name(database_name='TEMP')
             # 接着，将要删除的数据库中的单词同步到综合数据库
-            pass  # 代码未写
+            synchronize_words(database_name)
             # 最后删除数据库
-            delete_database(database_name)
-            compatible.clear_screen(debug=debug)
-            print('已删除数据库：{}，数据库被临时指向：TEMP'.format(database_name))
+            if delete_database(database_name):
+                compatible.clear_screen(debug=public.DEBUG)
+                print('已经删除数据库文件：{}'.format(database_name))
+            else:
+                compatible.clear_screen(debug=public.DEBUG)
+                print('没有删除数据库文件：{}'.format(database_name))
+            print('已删除数据库名称：{}，数据库被临时指向：TEMP'.format(database_name))
             print_config()
             # 更新配置文件中的单词数量的数据
             # 暂时不选择在此时更新
             return True
-        elif database_name != current_db_name:
-            compatible.clear_screen(debug=debug)
+        elif database_name != current_db_name and delete_result:
+            compatible.clear_screen(debug=public.DEBUG)
             print('数据库名称与当前数据库不对应，不需要删除配置文件')
+            # 接着，将要删除的数据库中的单词同步到综合数据库
+            synchronize_words(database_name)
+            # 最后删除数据库
+            if delete_database(database_name):
+                compatible.clear_screen(debug=public.DEBUG)
+                print('已经删除数据库文件：{}'.format(database_name))
+            else:
+                compatible.clear_screen(debug=public.DEBUG)
+                print('没有删除数据库文件：{}'.format(database_name))
             print_config()
             return False
         elif not delete_result:
-            compatible.clear_screen(debug=debug)
-            print('禁止删除数据库：{}'.format(database_name))
-            print('当前数据库仍为：{}'.format(get_database_name()))
+            compatible.clear_screen(debug=public.DEBUG)
+            print('禁止删除数据库：{}，当前数据库仍为：{}'.format(database_name, get_database_name()))
             # 没有删除配置文件
             # 可能原因：配置文件禁止删除或当前配置文件与数据库名称不对应
             return False
         else:
-            compatible.clear_screen(debug=debug)
-            logger.info('程序不应该来到这里，请通知我！')
-            print('程序不应该来到这里，请通知我！')
+            compatible.clear_screen(debug=public.DEBUG)
+            logger.info('程序不应该来到这里，请通知开发者！')
+            print('程序不应该来到这里，请通知开发者！')
             return False
     else:
-        compatible.clear_screen(debug=debug)
-        logger.info('程序不应该来到这里，请通知我！')
-        print('程序不应该来到这里，请通知我！')
+        compatible.clear_screen(debug=public.DEBUG)
+        logger.info('程序不应该来到这里，请通知开发者！')
+        print('程序不应该来到这里，请通知开发者！')
         return False
 

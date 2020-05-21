@@ -32,7 +32,7 @@ logger = logging.getLogger('main.email')
 
 # 读取用户配置文件
 def read_author_config():
-    author_filename = path.origin.author_filename()
+    author_filename = path.own.author_filename()
     if not path.path_exist(author_filename):
         logger.info('不存在程序签名！')
         public.exit_program(prompt='不存在程序签名，已退出！')

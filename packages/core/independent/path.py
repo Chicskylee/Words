@@ -170,10 +170,6 @@ class OriginPath(object):
         self.core = path_init(self.packages, 'core',  exist=True)
         self.independent = path_init(self.core, 'independent', exist=True)
 
-    # 开发者配置数据文件
-    def author_filename(self):
-        return os.path.join(self.independent, '.author')
-
 
 # 所有的文件皆要用函数写成
 class OwnPath(OriginPath):
@@ -181,12 +177,14 @@ class OwnPath(OriginPath):
         OriginPath.__init__(self)
         # 自带的数据目录
         self.own = path_init(self.app, 'own')
+        # 配置文件路径
+        self.conf = path_init(self.own, 'conf')
         # 日志目录
-        self.log = path_init(self.own, 'log')
+        self.log = path_init(self.own, 'log')        
         # 输入数据目录
         self.i = path_init(self.log, 'input')
         # 调试数据目录
-        self.d = path_init(self.log, 'debug')
+        self.d = path_init(self.log, 'log')
         # 音频目录
         self.mp3 = path_init(self.own, 'mp3')
         # 公共单词数据库目录
@@ -194,6 +192,19 @@ class OwnPath(OriginPath):
         # 公共音频数据库外层目录
         self.audios = path_init(self.own, 'audios',
                     default='/storage/emulated/0/_audios')
+
+    
+    # 开发者配置数据文件
+    def author_filename(self):
+        return os.path.join(self.conf, '.author.conf')
+
+    # 用于记录用户名、邮箱，及创建时间等
+    def init_filename(self):
+        return os.path.join(self.conf, '.init.conf')
+
+    # 配置文件
+    def config_filename(self):
+        return os.path.join(self.conf, '.config.conf')
 
     # 公共音频数据库目录：'~/Words/data/audios/[a-z0-9]'
     # 禁止为中文、长英文句子创建数据库文件
@@ -268,8 +279,6 @@ class UserPath(OriginPath):
         self.user = path_init(self.app, 'data')
         # html路径
         self.html = path_init(self.user, 'html')
-        # 配置文件路径
-        self.conf = path_init(self.user, 'conf')
         # 单词库外层路径
         self.words = path_init(self.user, 'words')
         # 备份路径
@@ -301,14 +310,6 @@ class UserPath(OriginPath):
         initial = get_initial(content)
         name = 'dict_{}.pk'.format(initial)
         return  os.path.join(self.word(DATABASE_NAME), name)
-
-    # 用于记录用户名、邮箱，及创建时间等
-    def init_filename(self):
-        return os.path.join(self.conf, 'init.conf')
-
-    # 配置文件
-    def config_filename(self):
-        return os.path.join(self.conf, 'config.conf')
 
     # html文件
     def html_filename(self, name):
@@ -343,3 +344,4 @@ class UserPath(OriginPath):
 origin = OriginPath()
 own = OwnPath()
 user = UserPath()
+

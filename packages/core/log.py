@@ -50,10 +50,8 @@ def send_log(e):
     submit_time = public.get_detail_strftime()
     mail = dict()
     mail['receiver_address'] = emails.author_addr()
-    body_datas = [
-        ('程序版本', public.version()),
-        ('提交时间', submit_time),
-        ('异常原因', e)]
+    body_datas = [('提交时间', submit_time),
+                  ('异常原因', e)]
     mail['email_body'] = emails.mail_body(*body_datas)
     mail['email_subject'] = '单词程序异常:{}'.format(e)
     mail['attachment_filename'] = log_filename
