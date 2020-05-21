@@ -1,5 +1,7 @@
 # private files
-.author
+.author.conf
+.init.conf
+.config.conf
 
 # development record
 README.md
