@@ -22,13 +22,6 @@ logger = logging.getLogger('main.public')
 # =================================
 # 全局调用该参数，DEBUG = True 时，不执行清屏
 DEBUG = False
-
-# 获取程序基本信息
-
-# 程序版本
-def version():
-    return '20181120'
-
 # =================================
 
 # 重写print函数，不兼容Py2(因为get)
