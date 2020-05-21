@@ -1,0 +1,17 @@
+# private files
+.author
+
+# development record
+README.md
+
+
+# python auto files
+__pycache__/
+.last_tmp.py
+*.pyc
+*.pyo
+
+# default files
+own/
+data/
+
