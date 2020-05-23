@@ -165,7 +165,7 @@ def play_audio(filename):
         pygame.mixer.music.load(filename)
         pygame.mixer.music.play()
     else:
-        print('程序无法导入sl4a和pygame，请用其它方法播放音频')
+        print(colorize(text='Warning：程序无法导入sl4a和pygame，请用其它方法播放音频', color='yellow'))
         logger.info('程序无法导入sl4a和pygame，请用其它方法播放音频')
 
 
