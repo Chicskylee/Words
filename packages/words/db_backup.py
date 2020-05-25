@@ -30,7 +30,10 @@ def progress_bar(completed, total, prompt=''):
     other_symbols_len = symbols_all_len - compressed_symbols_len
     compressed_symbols = compatible.colorize(' '*compressed_symbols_len, color='white')
     other_symbols = compatible.colorize(' '*other_symbols_len, color='black')
-    sys.stdout.write(' 已压缩:|{}{}|{:>6.2f}%\r'.format(compressed_symbols, other_symbols, rate*100))
+    if completed != total:
+        sys.stdout.write(' 已压缩:|{}{}|{:>6.2f}%\r'.format(compressed_symbols, other_symbols, rate*100))
+    else:
+        sys.stdout.write(' 已压缩:|{}{}|{:>6.2f}%\n'.format(compressed_symbols, other_symbols, rate*100))
     sys.stdout.flush()
 
 
