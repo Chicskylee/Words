@@ -92,6 +92,8 @@ def get_extract_datas(frequency=False, date=False,
 	       # 根据日期排序
 	       logger.debug('使用日期进行排序')
 	       db_items = sorted(db_items, key=lambda item:item[1][0][1], reverse=True)
+	   else:
+               logger.info('排序参数传入异常！')
 	   lines = list()
 	   for w, ((f, date), (s, ts)) in db_items:
 	       line = list()
@@ -102,10 +104,15 @@ def get_extract_datas(frequency=False, date=False,
 	       if soundmark:
 	           line.append(s)
 	       if translation:
-	           line.append(' '.join(ts))
+                   logger.debug(ts)
+                   # 去除译文中的人民译文
+                   ts = strip_person_name(ts)
+                   logger.debug(ts)
+                   line.append(' '.join(ts))
 	       if line:
 	           lines.append(line)
 	   return lines
+
 
 
 # 导出到TXT文件中
@@ -165,7 +172,7 @@ def export_datas(enabled, debug=False):
         if (sort_by < 0) or (sort_by > 2):
             sort_by = 0
     except Exception as e:
-        logger.info('选择排序依据异常：{}'.format(e))
+        logger.info('选择排序依据异常：{}'.format(e), exc_info=True)
         sort_by = 0
     # 前面已经处理过0,1和非法索引了，这里从2开始
     if index in range(2, 9):
