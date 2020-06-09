@@ -9,7 +9,6 @@
 # =================================
 # ---------------------------------
 # 从顶层文件执行本脚本使用
-from ..core import log
 from ..core import config
 from ..core.independent import path
 from ..core.independent import public

@@ -11,7 +11,6 @@ import sys
 import os
 import zipfile
 # ---------------------------------
-from ..core import log
 from ..core import config
 from ..core.independent import path
 from ..core.independent import public

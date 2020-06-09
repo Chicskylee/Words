@@ -15,7 +15,6 @@ from . import db_audio
 from . import db_export
 # ---------------------------------
 # 从顶层文件执行本脚本使用
-from ..core import log
 from ..core.independent import compatible
 # =================================
 # 日志记录

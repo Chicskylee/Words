@@ -14,7 +14,6 @@ import shutil
 from . import translate
 # ---------------------------------
 # 从顶层文件执行本脚本使用
-from ..core import log
 from ..core import config
 from ..core import collect
 from ..core.independent import path

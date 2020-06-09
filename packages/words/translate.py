@@ -16,7 +16,6 @@ import http.client
 # 捕获异常：urllib.error.HTTPError
 import urllib.error
 # ---------------------------------
-from ..core import log
 from ..core.independent import path
 from ..core.independent import public
 # =================================

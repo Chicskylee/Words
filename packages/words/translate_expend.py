@@ -13,7 +13,6 @@ import urllib.request
 import urllib.error
 import http
 # ---------------------------------
-from ..core import log
 from ..core.independent import path
 from ..core.independent import public
 from ..core.independent import compatible
