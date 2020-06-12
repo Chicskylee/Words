@@ -61,7 +61,7 @@ def filter_translation(enabled, filter_func=None):
             public.exit_program(prompt='已退出！')
         elif pattern in ['.*?', '.*', '']:
             logger.info('被禁止的匹配模式：{}'.format(pattern))
-            print('不允许匹配模式为:{!r}'.format(pattern))
+            print('不允许匹配模式为:{}'.format(pattern))
             continue
         logger.info('匹配模式：{}'.format(pattern))
         count = 0
@@ -71,13 +71,25 @@ def filter_translation(enabled, filter_func=None):
             word = data[0].strip()
             if word in words_container:
                 continue
-            if filter_func(word, pattern):
-                #soundmark = data[1][1][0]
-                translation = data[1][1][1]
-                print(compatible.colorize(text=word, color='green'), end='  ')
-                print(compatible.colorize(text=compatible.SPACE.join(translation), color='yellow'))
-                words_container.add(word)
-                count += 1
+            # 匹配译文中文
+            if not public.is_english(pattern):
+                translation_str = compatible.SPACE.join(data[1][1][1])
+                if pattern in translation_str:
+                    print(compatible.colorize(text=word, color='green'), end='  ')
+                    print(compatible.colorize(text=translation_str, color='yellow'))
+                    # 打印过的不再打印
+                    words_container.add(word)
+                    count += 1
+            # 匹配英文单词
+            else:
+                if filter_func(word, pattern):
+                    #soundmark = data[1][1][0]
+                    translation = data[1][1][1]
+                    print(compatible.colorize(text=word, color='green'), end='  ')
+                    print(compatible.colorize(text=compatible.SPACE.join(translation), color='yellow'))
+                    # 打印过的不再打印
+                    words_container.add(word)
+                    count += 1
         print('本次共有{}个匹配结果'.format(count))
         print('-'*45)
 
