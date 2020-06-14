@@ -29,6 +29,33 @@ import logging
 logger = logging.getLogger('main.db_filter')
 # =================================
 
+# 判断一段文字是否只包含英文符号
+def is_english(content):
+    if not content:
+        return False
+    if isinstance(content, list):
+        logger.info('注意：传入内容是列表，不是字符串！')
+        return False
+    if isinstance(content, tuple):
+        logger.info('注意：传入内容是元组，不是字符串！')
+        return False
+    if isinstance(content, dict):
+        logger.info('注意：传入内容是字典，不是字符串！')
+        return False
+    # 英文字母
+    en_alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    # 英文符号
+    en_symbol = "/'-. ,*?{}()[]<>&^$@+%\\|~!;:-_"
+    # 数字
+    integer_symbol = '1234567890'
+    permitted_text = en_symbol + en_alphabet + integer_symbol
+    for alphabet in content:
+        if alphabet.lower() not in permitted_text:
+            return False
+    return True
+
+
+
 # 过滤函数(filter_func)举例
 # 设置过滤规则，要求传入正则表达式的匹配模式字符串
 # 返回：True or False
@@ -67,12 +94,13 @@ def filter_translation(enabled, filter_func=None):
         count = 0
         # 防止打印的数据重复(因为之前没有处理末尾空格)
         words_container = set()
-        for data in datas:
-            word = data[0].strip()
-            if word in words_container:
-                continue
-            # 匹配译文中文
-            if not public.is_english(pattern):
+        # 匹配译文中文
+        if not is_english(pattern):
+            logger.info('中文匹配模式：{}'.format(pattern))
+            for data in datas:
+                word = data[0].strip()
+                if word in words_container:
+                    continue
                 translation_str = compatible.SPACE.join(data[1][1][1])
                 if pattern in translation_str:
                     print(compatible.colorize(text=word, color='green'), end='  ')
@@ -80,8 +108,13 @@ def filter_translation(enabled, filter_func=None):
                     # 打印过的不再打印
                     words_container.add(word)
                     count += 1
-            # 匹配英文单词
-            else:
+        # 匹配英文单词
+        else:
+            logger.info('英文匹配模式：{}'.format(pattern))
+            for data in datas:
+                word = data[0].strip()
+                if word in words_container:
+                    continue
                 if filter_func(word, pattern):
                     #soundmark = data[1][1][0]
                     translation = data[1][1][1]
