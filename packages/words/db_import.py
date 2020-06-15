@@ -27,6 +27,7 @@ logger = logging.getLogger('main.db_import')
 
 # 查单词，并将查找的译文写入数据库
 def automatic_lookup_content(content, db_dict_private, db_dict_public):
+    logger.info('content:{}'.format(content))
     # 从数据库中获取翻译内容
     # 首先进入当前数据库尝试获取译文
     translation_list = db_word.get_translation_from_dict(content, db_dict_private)
