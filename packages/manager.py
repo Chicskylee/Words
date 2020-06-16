@@ -347,13 +347,26 @@ def change_main(enabled, content):
         return None
     elif choice == '*':
         # 首先删除原来的不想要的译文
-        db_word.delete_content_from_dict(content, db='private')
-        # 然后添加新的译文到数据库
-        logger.info('更改单词表中的译文')
-        translation_list[1][1] = new_translation
-        logger.info('将译文写入个人数据库')
-        db_word.add_content(content, translation_list[1], db='private')
-        print('已经成功更改{}的译文！'.format(content))
+        if db_word.delete_content_from_dict(content, db='private'):
+            # 然后添加新的译文到数据库
+            logger.info('已删除个人单词表中{}的译文{}'.format(content, translation))
+            translation_list[1][1] = new_translation
+            db_word.add_content(content, translation_list[1], db='private')
+            logger.info('已将{}的译文{}写入个人数据库'.format(content, new_translation))
+            print('已经成功更改{}的译文！'.format(content))
+            # 以下同步修改公共数据库
+            # 删除原来不想要的译文，返回删除成功标识
+            if db_word.delete_content_from_dict(content, db='public'):
+                logger.info('已删除公共单词表中{}的译文{}'.format(content, translation))
+                # 删除成功，修改译文
+                db_word.add_content(content, translation_list[1], db='public')
+                logger.info('已将{}的译文{}写入公共数据库'.format(content, new_translation))
+            else:
+                logger.info('删除失败！未删除：公共单词表中{}的译文{}'.format(content, translation))
+        else:
+            logger.info('删除失败！未删除：个人单词表中{}的译文{}'.format(content, translation))
+            print('更改失败！没有更改{}的译文！'.format(content))
+
 
 
 # 删除用户不想要的单词及其译文

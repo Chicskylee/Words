@@ -197,12 +197,12 @@ def add_content(content, translation, db):
     db_dict = read_db_dict(content, db)
     # 已经存在单词，直接返回(需要手动删除该单词)
     if content_in_dict(content, db_dict):
-        logger.info('当前数据库已经存在单词：{}，直接返回'.format(content))
+        logger.info('{}数据库已经存在单词：{}，直接返回'.format(db, content))
         return False
     # 确定不存在该单词，添加
     db_dict[content] = [[1, int(public.get_strftime("%Y%m%d%H%M%S"))], translation]  # 添加一条数据
     write_db_dict(db_dict, content, db)
-    logger.debug('已写入{}的数据'.format(content))
+    logger.debug('{}库已写入{}的数据'.format(db, content))
     return True
 
 
@@ -225,7 +225,7 @@ def change_content_count(content, db, operate='+'):
             db_dict[content][0][0] = 1
     # 更新时间标识
     db_dict[content][0][1] = int(public.get_strftime("%Y%m%d%H%M%S"))
-    logger.info('修改单词{}计数为：{}'.format(content, db_dict[content][0][0]))
+    logger.info('{}库修改单词{}计数为：{}'.format(db, content, db_dict[content][0][0]))
     write_db_dict(db_dict, content, db)
     return True
 
@@ -240,12 +240,12 @@ def delete_content_from_dict(content, db):
     if not db_dict: return False
     # 不存在单词，直接返回
     if not content_in_dict(content, db_dict):
-        print('不存在单词：{}'.format(content))
+        print('{}库中不存在单词：{}'.format(db, content))
         return False
     # 确定存在该单词，则尝试删除
     db_dict.pop(content)
     write_db_dict(db_dict, content, db)
-    logger.info('单词{}的数据已被删除'.format(content))
+    logger.info('{}库中单词{}的数据已被删除'.format(db, content))
     return True
 
 
