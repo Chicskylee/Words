@@ -169,7 +169,8 @@ def help_user(enabled):
     print('想要导出综合库：请复制综合库到用户库文件夹\n'
           '设置导出文件夹：请创建空文件夹_user/export\n'
           '设置导入文件夹：请创建空文件夹_user/import\n'
-          '若想要重播单词：请输入*a [单词]')
+          '若想要重播单词：请输入*a [单词]\n'
+          '若想要修改译文：请输入*c [单词]')
     print('='*45)
     collect.get_input(prompt='按任意键退出帮助：')
 
@@ -314,7 +315,7 @@ def lookup_more(enabled, content):
     return None
 
 
-# 用于更改单词译文
+# 用于更改个人单词译文
 def change_main(enabled, content):
     if enabled not in ['*c', '*change']:
         return None
@@ -326,18 +327,19 @@ def change_main(enabled, content):
     translation_list = get_translation_from_db(content, write_flag=False)
     translation = translation_list[1][1]
     default_translation = '*'.join(translation)
-    print(compatible.colorize(text='原译文：', color='green'), default_translation)
+    print(compatible.colorize(text='原译文：', color='green'), translation)
     # 调用 sl4a 从程序框获取自定义译文
     custom_translation = compatible.get_custom_translation(
                 default=default_translation,
-                prompt="自定义译文",
+                prompt="自定义译文(不同词性以*分隔)",
                 subprompt=default_translation)
     if not custom_translation:
         logger.debug('用户没有输入译文，退出译文修改函数')
         print('没有修改单词{}的译文'.format(content))
         return None
-    print(compatible.colorize(text='新译文：', color='red'), custom_translation)
+    # 不同的词性用星号分隔
     new_translation = custom_translation.split('*')
+    print(compatible.colorize(text='新译文：', color='red'), new_translation)
     choice = collect.get_input(prompt='取消更改(Enter)，确认更改(*)：')
     if choice == '':
         compatible.clear_screen(debug=public.DEBUG)
@@ -395,7 +397,7 @@ def more_operator(enabled, content):
         config.print_config()
     # 进入单词译文修改函数
     elif enabled in ['*c', '*change']:
-        modify_main(enabled, content)
+        change_main(enabled, content)
     # 进入单词删除函数
     elif enabled in ['*d', '*delete']:
         delete_main(enabled, content)
