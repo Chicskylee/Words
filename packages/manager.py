@@ -357,14 +357,17 @@ def change_main(enabled, content):
             # 以下同步修改公共数据库
             choice_modify_public = collect.get_input(prompt='同步更改公共库(*)，不同步更改(Enter)：')
             # 删除原来不想要的译文，返回删除成功标识
-            if (choice_modify_public == '*') and db_word.delete_content_from_dict(content, db='public'):
-                logger.info('已删除公共单词表中{}的译文{}'.format(content, translation))
-                # 删除成功，修改译文
-                db_word.add_content(content, translation_list[1], db='public')
-                logger.info('已将{}的译文{}写入公共数据库'.format(content, new_translation))
-                print('公共库已经成功更改{}的译文！'.format(content))
+            if choice_modify_public == '*':
+                if db_word.delete_content_from_dict(content, db='public'):
+                    logger.info('已删除公共单词表中{}的译文{}'.format(content, translation))
+                    # 删除成功，修改译文
+                    db_word.add_content(content, translation_list[1], db='public')
+                    logger.info('已将{}的译文{}写入公共数据库'.format(content, new_translation))
+                    print('公共库已经成功更改{}的译文！'.format(content))
+                else:
+                    logger.info('删除失败！未删除：公共单词表中{}的译文{}'.format(content, translation))
+                    print('公共库不存在{}的数据，请使用*s直接同步该单词数据到公共数据库'.format(content))
             else:
-                logger.info('删除失败！未删除：公共单词表中{}的译文{}'.format(content, translation))
                 print('公共库未更改{}的译文！'.format(content))
         else:
             logger.info('删除失败！未删除：个人单词表中{}的译文{}'.format(content, translation))
