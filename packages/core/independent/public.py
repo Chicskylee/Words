@@ -178,7 +178,15 @@ def write(text, filename, mode='wb', coding='utf8'):
 # 读取文本文件
 def read(filename, coding='utf8'):
     with open(filename, 'rb') as f:
-        return f.read().decode(coding)
+        bytes_content = f.read()
+        try:
+            content = bytes_content.decode(coding)
+        except UnicodeDecodeError as e:
+            str_e = str(e)
+            logger.info('发现解码异常：{}'.format(str_e), exc_info=True)
+            logger.info('发生解码异常的文件：{}'.format(filename))
+            raise
+        return content
 
 # ---------------------------------
 
