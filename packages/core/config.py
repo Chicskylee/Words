@@ -37,7 +37,7 @@ BAN_DELETE_NAMES = ['[退出]', '[新建库]', '[删除库]',
 #  'datas':[(database_name, database_name_time),
 #           ]}
 def initialize_init():
-    logger.info('程序到达：config.py-initialize_init函数')
+    logger.debug('程序到达：config.py-initialize_init函数')
     filename = path.own.init_filename()
     if path.path_exist(filename):
         return True
@@ -74,7 +74,7 @@ def initialize_init():
 
 # 删除初始化配置文件
 def del_init():
-    logger.info('程序到达：config.py-del_init函数')
+    logger.debug('程序到达：config.py-del_init函数')
     filename = path.user.init_filename()
     if path.path_exist(filename):
         choice_continue = collect.get_input('确认删除配置文件(*)：')
@@ -89,14 +89,14 @@ def del_init():
 # 写入初始化配置字典，具体配置信息请参考path模块
 # 注意：字典写入文件'~/Words/data/config/init.conf'
 def write_init(init):
-    logger.info('程序到达：config.py-write_init函数')
+    logger.debug('程序到达：config.py-write_init函数')
     filename = path.own.init_filename()
     public.write_pickle(init, filename)
 
 
 # 读取初始化配置
 def read_init():
-    logger.info('程序到达：config.py-read_init函数')
+    logger.debug('程序到达：config.py-read_init函数')
     filename = path.own.init_filename()
     if not path.path_exist(filename):
         initialize_init()
@@ -105,28 +105,28 @@ def read_init():
 
 # 获取初始配置时间
 def get_init_time():
-    logger.info('程序到达：config.py-get_init_time函数')
+    logger.debug('程序到达：config.py-get_init_time函数')
     init = read_init()
     return init['user']['init_time']
 
 
 # 获取初始配置文件中的用户名
 def get_user_name():
-    logger.info('程序到达：config.py-get_user_name函数')
+    logger.debug('程序到达：config.py-get_user_name函数')
     init = read_init()
     return init['user']['user_name']
 
 
 # 获取初始配置文件中的用户邮件地址
 def get_user_email():
-    logger.info('程序到达：config.py-get_user_email函数')
+    logger.debug('程序到达：config.py-get_user_email函数')
     init = read_init()
     return init['user']['user_email']
 
 
 # 获取可用数据库名称列表
 def get_database_names():
-    logger.info('程序到达：config.py-get_database_names函数')
+    logger.debug('程序到达：config.py-get_database_names函数')
     init = read_init()
     database_names_list = init['datas']
     names = [name for name, _, _ in database_names_list]
@@ -137,7 +137,7 @@ def get_database_names():
 # 返回：20位的数字字符串，代表名称创建的具体时间
 # 异常返回：None， 当数据库名称不存在时返回
 def get_database_time(database_name):
-    logger.info('程序到达：config.py-get_database_time函数')
+    logger.debug('程序到达：config.py-get_database_time函数')
     init = read_init()
     database_names_list = init['datas']
     for name, detail_time, _ in database_names_list:
@@ -150,7 +150,7 @@ def get_database_time(database_name):
 # 返回：整数，代表该数据库中含有的单词量
 # 异常返回：None， 当数据库名称不存在时返回
 def get_database_words_amount(database_name):
-    logger.info('程序到达：config.py-get_database_words_amount函数')
+    logger.debug('程序到达：config.py-get_database_words_amount函数')
     init = read_init()
     database_names_list = init['datas']
     for name, _, words_amount in database_names_list:
@@ -161,7 +161,7 @@ def get_database_words_amount(database_name):
 
 # 设置数据库中单词数量
 def set_database_words_amount(database_name, words_amount):
-    logger.info('程序到达：config.py-set_database_words_amount函数')
+    logger.debug('程序到达：config.py-set_database_words_amount函数')
     init = read_init()
     database_names_list = init['datas']
     for name, detail_time, amount in database_names_list:
@@ -179,7 +179,7 @@ def set_database_words_amount(database_name, words_amount):
 # 返回：True 或 False，表示添加结果
 # 返回结果用于判断是否允许创建该数据库
 def add_database_name(database_name, words_amount=0):
-    logger.info('程序到达：config.py-add_database_name函数')
+    logger.debug('程序到达：config.py-add_database_name函数')
     if not collect.valid_database_name(database_name):
         logger.info('数据库名称格式非法，禁止添加')
         return False
@@ -198,7 +198,7 @@ def add_database_name(database_name, words_amount=0):
 # 从数据库名称列表中删除一个数据库名称
 # database_name：要删除的数据库名称
 def delete_database_name(database_name):
-    logger.info('程序到达：config.py-delete_database_name函数')
+    logger.debug('程序到达：config.py-delete_database_name函数')
     database_names = get_database_names()
     # 禁止删除的数据库名称
     if database_name in BAN_DELETE_NAMES:
@@ -219,7 +219,7 @@ def delete_database_name(database_name):
 
 # 打印并返回可用数据库名称列表
 def print_database_names(database_names=None):
-    logger.info('程序到达：config.py-print_database_names函数')
+    logger.debug('程序到达：config.py-print_database_names函数')
     if database_names is None:
         database_names = get_database_names()
     n = len(database_names)
@@ -245,7 +245,7 @@ def print_database_names(database_names=None):
 # 配置文件的初始化值形式，生成配置字典
 # 返回：一个字典
 def initialize_config(database_name='TEMP'):
-    logger.info('程序到达：config.py-initialize_config函数')
+    logger.debug('程序到达：config.py-initialize_config函数')
     filename = path.own.config_filename()
     if path.path_exist(filename):
         logger.info('配置信息已存在，修改请用set_config函数')
@@ -283,7 +283,7 @@ def initialize_config(database_name='TEMP'):
 
 # 设置配置字典
 def set_config(database_name='TEMP'):
-    logger.info('程序到达：config.py-set_config函数')
+    logger.debug('程序到达：config.py-set_config函数')
     filename = path.own.config_filename()
     if not path.path_exist(filename):
         logger.info('配置信息不存在，创建请用initialize_config函数')
@@ -322,7 +322,7 @@ def set_config(database_name='TEMP'):
 # config：配置字典
 # 注意：字典写入文件'~/Words/data/config/config.conf'
 def write_config(config):
-    logger.info('程序到达：config.py-write_config函数')
+    logger.debug('程序到达：config.py-write_config函数')
     logger.debug('写入配置：\n{}'.format(pprint.pformat(config)))
     filename = path.own.config_filename()
     public.write_pickle(config, filename)
@@ -347,7 +347,7 @@ def write_config(config):
 #              'words_total':xxx},
 #  }
 def read_config():
-    logger.info('程序到达：config.py-read_config函数')
+    logger.debug('程序到达：config.py-read_config函数')
     filename = path.own.config_filename()
     if not path.path_exist(filename):
         initialize_config(database_name='TEMP')
@@ -363,7 +363,7 @@ def read_config():
 # 注意：修改database_name，将更新整个配置文件
 # 注意：函数修改文件'~/Words/data/config/config.conf'
 def set_database_name(database_name):
-    logger.info('程序到达：config.py-set_database_name函数')
+    logger.debug('程序到达：config.py-set_database_name函数')
     # 首先检查，是否允许创建该数据库
     if database_name not in get_database_names():
         logger.debug('数据库名称不在初始化配置列表中，请先添加名称：{}'.format(database_name))
@@ -379,7 +379,7 @@ def set_database_name(database_name):
 # 注意：修改words_total，其它值不会改变
 # 注意：如果当前数据库名称不是database_name，将修改失败
 def set_words_total(database_name, words_total):
-    logger.info('程序到达：config.py-set_words_total函数')
+    logger.debug('程序到达：config.py-set_words_total函数')
     config = read_config()
     # 下面具体修改各项内容
     if config['database']['database_name'] != database_name:
@@ -403,7 +403,7 @@ def set_words_total(database_name, words_total):
 
 # 获取当前单词库名称
 def get_database_name():
-    logger.info('程序到达：config.py-get_database_name函数')
+    logger.debug('程序到达：config.py-get_database_name函数')
     config = read_config()
     database_name = config['database']['database_name']
     logger.debug('当前数据库名称：{}'.format(database_name))
@@ -412,7 +412,7 @@ def get_database_name():
 
 # 获取当前数据库中的单词总条数
 def get_database_words_total():
-    logger.info('程序到达：config.py-get_database_words_total函数')
+    logger.debug('程序到达：config.py-get_database_words_total函数')
     config = read_config()
     logger.debug('当前配置：\n{}'.format(pprint.pformat(config)))
     words_total = config['database']['words_total']
@@ -422,7 +422,7 @@ def get_database_words_total():
 
 # 获取初始化配置信息的init_time
 def get_config_init_time():
-    logger.info('程序到达：config.py-get_config_init_time函数')
+    logger.debug('程序到达：config.py-get_config_init_time函数')
     config = read_config()
     return config['init']['init_time']
 
@@ -431,7 +431,7 @@ def get_config_init_time():
 # choice_create：当指定为True时才真正创建配置文件
 # 注意：应该禁止创建超过13(不含)个英文长度的数据库名称
 def create_config(choice_create=True):
-    logger.info('程序到达：config.py-create_config函数')
+    logger.debug('程序到达：config.py-create_config函数')
     if not choice_create:
         # 无配置文件不能查单词，所以必须退出程序！
         public.exit_program(prompt='没有完成配置，已退出(Enter)：', pause=True)
@@ -447,7 +447,7 @@ def create_config(choice_create=True):
 # 在主程序中给用户打印配置文件的提示内容
 # n：一行内容的屏幕总宽度
 def print_config(n=45):
-    logger.info('程序到达：config.py-print_config函数')
+    logger.debug('程序到达：config.py-print_config函数')
     # 当前数据库名称
     database_name = get_database_name()
     # 当前数据库的单词总数
@@ -464,7 +464,7 @@ def print_config(n=45):
 # 数据库文件的相关操作
 
 def delete_database(database_name):
-    logger.info('程序到达：config.py-delete_database函数')
+    logger.debug('程序到达：config.py-delete_database函数')
     # 删除一个数据库
     logger.info('用户进入删除数据库操作！！！')
     print('注意：该操作将删除数据库，且无法恢复！')
@@ -487,7 +487,7 @@ def delete_database(database_name):
 
 # 将删除的数据库中的单词添加同步到综合数据库
 def synchronize_words(database_name):
-    logger.info('程序到达：config.py-synchronize_words函数')
+    logger.debug('程序到达：config.py-synchronize_words函数')
     pass
 
 
@@ -495,7 +495,7 @@ def synchronize_words(database_name):
 
 # 检查用户配置信息
 def check_config():
-    logger.info('程序到达：config.py-check_config函数')
+    logger.debug('程序到达：config.py-check_config函数')
     # 检查用户配置
     configuration = read_config()
     # 检查开发者配置
@@ -509,7 +509,7 @@ def check_config():
 # enabled：当且仅当其值为'*'时被激活
 # 返回：True 或 False，用来表示是否真正修改了数据库
 def main(enabled, debug=False):
-    logger.info('程序到达：config.py-main函数')
+    logger.debug('程序到达：config.py-main函数')
     if enabled != '*':
         return False
     # 引导用户操作配置文件和数据库文件

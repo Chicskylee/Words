@@ -30,7 +30,7 @@ logger = logging.getLogger('main.export')
 # 注意：这种翻译成人名的译文只在最后一个元素中出现
 # 注意：该函数被print_dict(obj)调用
 def strip_person_name(obj):
-    logger.info('程序到达：db_export.py-strip_person_name函数')
+    logger.debug('程序到达：db_export.py-strip_person_name函数')
     if all(i in obj[-1] for i in ['n.', '人名']):
         return obj[:-1]  # 去除obj[-1]
     else:
@@ -41,7 +41,7 @@ def strip_person_name(obj):
 # 第一排序依据：查单词次数
 # 第二排序依据：日期
 def print_dict(obj):
-    logger.info('程序到达：db_export.py-print_dict函数')
+    logger.debug('程序到达：db_export.py-print_dict函数')
     # obj[key][0]是专门用来排序的依据列表
     sort_dict = {key:obj[key][0] for key in obj}
     # 排序依据，其中日期前的负号是为了排序而附加的
@@ -80,7 +80,7 @@ def get_extract_datas(frequency=False, date=False,
 	       word=False, soundmark=False, translation=False,
 	       sort_by_frequency=False, sort_by_alphabet=False,
 	       sort_by_date=False):
-    logger.info('程序到达：db_export.py-get_extract_datas函数')
+    logger.debug('程序到达：db_export.py-get_extract_datas函数')
     db_dict = db_word.collect_dicts(db='private')
     db_items = db_dict.items()
     if sort_by_alphabet:
@@ -120,7 +120,7 @@ def get_extract_datas(frequency=False, date=False,
 
 # 导出到TXT文件中
 def export_txt(extract_datas):
-    logger.info('程序到达：db_export.py-export_txt函数')
+    logger.debug('程序到达：db_export.py-export_txt函数')
     if not extract_datas:
         print('没有需要导出的内容')
         return False
@@ -147,7 +147,7 @@ def export_txt(extract_datas):
 # 返回：None，用户主动进入本函数后退出
 # 返回：False，用户非主动进入本函数后自动退出
 def export_datas(enabled, debug=False):
-    logger.info('程序到达：db_export.py-export_datas函数')
+    logger.debug('程序到达：db_export.py-export_datas函数')
     compatible.clear_screen(debug=debug)
     if enabled not in ['*e', '*export']:
         return False

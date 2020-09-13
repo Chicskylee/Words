@@ -47,7 +47,7 @@ logger = get_logger(log_name='main.log', log_level='info')
 # 将日志记录文件通过附件发送到邮箱
 # e：异常提示
 def send_log(e):
-    logger.info('程序到达：log.py-send_log函数')
+    logger.debug('程序到达：log.py-send_log函数')
     log_filename = path.own.debug_filename()
     log_name = path.get_basename(log_filename)
     submit_time = public.get_detail_strftime()
@@ -66,7 +66,7 @@ def send_log(e):
 
 # 保存用户输入的数据，用于调试程序
 def save_input_content(text, description=None):
-    logger.info('程序到达：log.py-save_input_content函数')
+    logger.debug('程序到达：log.py-save_input_content函数')
     # 这些内容不记录：空格代表退出
     if text in ['', ]:
         return None
@@ -80,7 +80,7 @@ def save_input_content(text, description=None):
 
 # 记录自动导入函数翻译失败的单词
 def record_translate_failed(content, add_time=False):
-    logger.info('程序到达：log.py-record_translate_failed函数')
+    logger.debug('程序到达：log.py-record_translate_failed函数')
     translate_failed_filename = path.own.debug_translate_failed_filename()
     if add_time:
         translate_failed_time = public.get_strftime(format='%Y-%m-%d %H:%M:%S')

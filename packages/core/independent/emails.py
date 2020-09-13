@@ -32,7 +32,7 @@ logger = logging.getLogger('main.email')
 
 # 读取用户配置文件
 def read_author_config():
-    logger.info('程序到达：emails.py-read_author_config函数')
+    logger.debug('程序到达：emails.py-read_author_config函数')
     author_filename = path.own.author_filename()
     if not path.path_exist(author_filename):
         logger.info('不存在程序签名！')
@@ -42,13 +42,13 @@ def read_author_config():
 
 # 作者邮箱
 def author_addr():
-    logger.info('程序到达：emails.py-author_addr函数')
+    logger.debug('程序到达：emails.py-author_addr函数')
     return read_author_config()['addr']
 
 
 # 作者密码
 def author_pwd():
-    logger.info('程序到达：emails.py-author_pwd函数')
+    logger.debug('程序到达：emails.py-author_pwd函数')
     return read_author_config()['pwd']
 
 
@@ -57,7 +57,7 @@ def author_pwd():
 
 # 格式化签名
 def signature_format(signature, address):
-    logger.info('程序到达：emails.py-signature_format函数')
+    logger.debug('程序到达：emails.py-signature_format函数')
     signature_encoded = email.header.Header(signature, 'utf-8').encode('utf-8')
     return email.utils.formataddr((signature_encoded, address))
 
@@ -66,7 +66,7 @@ def signature_format(signature, address):
 # args：列表，其每个元素都是二元元组，代表(描述, 具体值)
 # 返回：一个字符串，代表邮件的正文
 def mail_body(*args):
-    logger.info('程序到达：emails.py-mail_body函数')
+    logger.debug('程序到达：emails.py-mail_body函数')
     template = '<html><body>{}\n</body></html>'
     content = str()
     for describe, value in args:
@@ -77,7 +77,7 @@ def mail_body(*args):
 # 发送纯文本格式的邮件
 def send_plain_email(receiver_address,
            email_subject, email_body):
-    logger.info('程序到达：emails.py-send_plain_email函数')
+    logger.debug('程序到达：emails.py-send_plain_email函数')
     receiver_signature = receiver_address
     sender_address = author_addr()
     sender_password = author_pwd()
@@ -127,7 +127,7 @@ def send_attachment_email(receiver_address,
         email_subject, email_body,
         attachment_filename, attachment_type,
         attachment_format, attachment_name):
-    logger.info('程序到达：emails.py-send_attachment_email函数')
+    logger.debug('程序到达：emails.py-send_attachment_email函数')
     receiver_signature = receiver_address
     sender_address = author_addr()
     sender_password = author_pwd()

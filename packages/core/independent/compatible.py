@@ -48,7 +48,7 @@ SPACE = chr(160)
 # Linux返回：Linux
 # Android返回：Android
 def depend_system():
-    logger.info('程序到达：compatible.py-depend_system函数')
+    logger.debug('程序到达：compatible.py-depend_system函数')
     if os.name == 'nt':
         return 'Windows'
     if os.name == 'posix':
@@ -65,7 +65,7 @@ def depend_system():
 # 注意：不要在非Android设备上使用该函数
 # 'storage'内的文件夹：'emulated'、'self'和SD卡文件夹
 def get_external_sdcard_name():
-    logger.info('程序到达：compatible.py-get_external_sdcard_name函数')
+    logger.debug('程序到达：compatible.py-get_external_sdcard_name函数')
     android_path = os.listdir('/storage')
     dirs_list = [i for i in android_path if i != 'emulated' and i != 'self']
     logger.info('SD List: {}'.format(dirs_list))
@@ -86,7 +86,7 @@ def get_external_sdcard_name():
 # 颜色函数
 # 将text内容两侧增加颜色装饰符
 def colorize(text, color='default'):
-    logger.info('程序到达：compatible.py-colorize函数')
+    logger.debug('程序到达：compatible.py-colorize函数')
     colors = {'default':'\033[0m',
         'bold': '\033[1m',
         'shadow': '\033[3m',
@@ -128,7 +128,7 @@ def colorize(text, color='default'):
 # 用于当调用终端(cmd命令行或linux Shell)时清理屏幕
 # 注意：用Python shell调用时请屏蔽该函数
 def clear_screen(prompt=None, pause=False, debug=False):
-    logger.info('程序到达：compatible.py-clear_screen函数')
+    logger.debug('程序到达：compatible.py-clear_screen函数')
     if debug:
         print(colorize('程序正以debug模式运行', color='cyan'))
         logger.info('程序正以debug模式运行，因此不执行清屏命令')
@@ -159,7 +159,7 @@ def clear_screen(prompt=None, pause=False, debug=False):
 
 # 根据文件名路径播放音频
 def play_audio(filename):
-    logger.info('程序到达：compatible.py-play_audio函数')
+    logger.debug('程序到达：compatible.py-play_audio函数')
     if 'droid' in globals():
         logger.info('程序成功导入droid，可用该库播放音频')
         # 播放mp3
@@ -176,7 +176,7 @@ def play_audio(filename):
 
 # 播放并删除文件
 def play_and_remove_audio(filename, play=True, debug=False):
-    logger.info('程序到达：compatible.py-play_and_remove_audio函数')
+    logger.debug('程序到达：compatible.py-play_and_remove_audio函数')
     if filename is None:
         logger.info('传入的文件名为None，无法播放音频，但仍返回True')
         return True
@@ -204,7 +204,7 @@ def play_and_remove_audio(filename, play=True, debug=False):
 def get_custom_translation(default='',
             prompt="自定义译文",
             subprompt="注意：不同译文用**号隔开"):
-    logger.info('程序到达：compatible.py-get_custom_translation函数')
+    logger.debug('程序到达：compatible.py-get_custom_translation函数')
     try:
         droid = sl4a.Android()
         # 从对话框中获取值

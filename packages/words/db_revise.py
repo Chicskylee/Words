@@ -24,7 +24,7 @@ logger = logging.getLogger('main.db_revise')
 
 # 获取当前数据库中的 词频 和 单词
 def get_words_list():
-    logger.info('程序到达：db_revise.py-get_words_list函数')
+    logger.debug('程序到达：db_revise.py-get_words_list函数')
     db_dict = db_word.collect_dicts(db='private')
     db_items = db_dict.items()
     # 根据词频排序
@@ -36,7 +36,7 @@ def get_words_list():
 
 
 def main(enabled):
-    logger.info('程序到达：db_revise.py-main函数')
+    logger.debug('程序到达：db_revise.py-main函数')
     if enabled not in ['*r', '*revise']:
         return None
     # 第一步、获取当前词库中的纯单词

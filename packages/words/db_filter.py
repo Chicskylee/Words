@@ -31,7 +31,7 @@ logger = logging.getLogger('main.db_filter')
 
 # 判断一段文字是否只包含英文符号
 def is_english(content):
-    logger.info('程序到达：db_filter.py-is_english函数')
+    logger.debug('程序到达：db_filter.py-is_english函数')
     if not content:
         return False
     if isinstance(content, list):
@@ -64,7 +64,7 @@ def is_english(content):
 # ^cover(\S*(?!.* )\S*)  匹配以cover开头，然后是字符，然后不能包含空格的内容，然后是一些字符；
 # ^(?!.*hello)  匹配不含hello的字符
 def is_match(word, pattern):
-    logger.info('程序到达：db_filter.py-is_match函数')
+    logger.debug('程序到达：db_filter.py-is_match函数')
     pattern = re.compile(pattern)
     if pattern.match(word):
         return True
@@ -74,7 +74,7 @@ def is_match(word, pattern):
 # 过滤符合添加的单词，打印出打印出其原文和译文
 @public.retry_decorator(prompt='匹配模式错误，请检查后重试', retry=5)
 def filter_translation(enabled, filter_func=None):
-    logger.info('程序到达：db_filter.py-filter_translation函数')
+    logger.debug('程序到达：db_filter.py-filter_translation函数')
     if enabled not in ['*f', '*filter']:
         return None
     logger.debug('进入过滤单词函数')

@@ -20,7 +20,7 @@ logger = log.get_logger(log_name='main', log_level='info')
 
 @public.catch_exception
 def cage_main():
-    logger.info('程序到达：main.py-cage_main函数')
+    logger.debug('程序到达：main.py-cage_main函数')
     try:
         manager.main()
     except KeyboardInterrupt as e:
