@@ -19,7 +19,6 @@ logger = logging.getLogger('main.log')
 
 # 日志记录 logger，为防止重复log应该仅允许main调用
 def get_logger(log_name, log_level=None):
-    logger.info('程序到达：log.py-get_logger函数')
     level_dict = {'debug':logging.DEBUG,
                   'info':logging.INFO,
                   'warn':logging.WARN,
@@ -42,6 +41,8 @@ def get_logger(log_name, log_level=None):
     logger.addHandler(file_handler)
     return logger
 
+
+logger = get_logger(log_name='main.log', log_level='info')
 
 # 将日志记录文件通过附件发送到邮箱
 # e：异常提示

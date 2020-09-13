@@ -85,35 +85,35 @@ def get_extract_datas(frequency=False, date=False,
     db_items = db_dict.items()
     if sort_by_alphabet:
 	# 根据首字母排序
-	logger.debug('使用单词首字母进行排序')
-	db_items = sorted(db_items, key=lambda item:item[0])
+        logger.debug('使用单词首字母进行排序')
+        db_items = sorted(db_items, key=lambda item:item[0])
     elif sort_by_frequency:
 	# 根据词频排序
-	logger.debug('使用单词频率进行排序')
-	db_items = sorted(db_items, key=lambda item:item[1][0][0], reverse=True)
+        logger.debug('使用单词频率进行排序')
+        db_items = sorted(db_items, key=lambda item:item[1][0][0], reverse=True)
     elif sort_by_date:
 	# 根据日期排序
-	logger.debug('使用日期进行排序')
-	db_items = sorted(db_items, key=lambda item:item[1][0][1], reverse=True)
+        logger.debug('使用日期进行排序')
+        db_items = sorted(db_items, key=lambda item:item[1][0][1], reverse=True)
     else:
         logger.info('排序参数传入异常！')
-    lines = list()
+        lines = list()
     for w, ((f, date), (s, ts)) in db_items:
-	line = list()
-	if frequency:
-	    line.append('[{:02d}]'.format(f))
-	if word:
-	    line.append(w)
-	if soundmark:
-	    line.append(s)
-	if translation:
+        line = list()
+        if frequency:
+            line.append('[{:02d}]'.format(f))
+        if word:
+            line.append(w)
+        if soundmark:
+            line.append(s)
+        if translation:
             logger.debug(ts)
             # 去除译文中的人民译文
             ts = strip_person_name(ts)
             logger.debug(ts)
             line.append(' '.join(ts))
-	if line:
-	    lines.append(line)
+        if line:
+            lines.append(line)
     return lines
 
 
