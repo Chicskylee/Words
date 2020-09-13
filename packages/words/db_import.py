@@ -67,7 +67,7 @@ def automatic_lookup_content(content, db_dict_private, db_dict_public):
 
 @public.timeit
 def main(enabled):
-    logger.debug('程序到达logger.debug('程序到达：db_import.py-main函数')
+    logger.debug('程序到达：db_import.py-main函数')
     if enabled not in ['*i', '*import']:
         return None
     # 第零步、确认是否将单词自动汇入当前数据库中
