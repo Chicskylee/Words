@@ -28,6 +28,7 @@ logger = logging.getLogger('main.translate')
 # 下载扇贝单词音频
 # cover_old：若要覆盖原数据，请设置cover_old=True
 def get_en_audio_from_shanbay(content, cover_old=False):
+    logger.info('程序到达：translate.py-get_en_audio_from_shanbay函数')
     logger.info('正在抓取扇贝单词音频链接并准备下载音频文件')
     content = public.deal_content(content)
     # 英音
@@ -63,6 +64,7 @@ def get_en_audio_from_shanbay(content, cover_old=False):
 # 获取网页源代码
 # 若出现Connect reset by peer，请修改该部分内容
 def get_en_html(content):
+    logger.info('程序到达：translate.py-get_en_html函数')
     url_template = 'http://m.youdao.com/dict?le=eng&q={}'
     url = url_template.format(content)
     data = {}
@@ -99,6 +101,7 @@ def get_en_html(content):
 
 # 根据url获取中文的翻译信息
 def get_ch_json(content):
+    logger.info('程序到达：translate.py-get_ch_json函数')
     data = dict()
     data['type'] = 'AUTO'
     data['i'] = content
@@ -131,6 +134,7 @@ def get_ch_json(content):
 # cover_old：传入True将覆盖原有音频数据，否则传入False(默认)
 @public.retry_decorator()
 def get_en_audio(html, content, cover_old=False):
+    logger.info('程序到达：translate.py-get_en_audio函数')
     logger.info('正在抓取有道词典音频链接并准备下载音频文件')
     content = public.deal_content(content)
     audio_pattern = r'''data-rel="(.*?)"\r\n'''
@@ -168,6 +172,7 @@ def get_en_audio(html, content, cover_old=False):
 
 
 def get_en_soundmark(html):
+    logger.info('程序到达：translate.py-get_en_soundmark函数')
     # 获取音标：得到的结果必须是字符串
     logger.info('正在抓取音标')
     pattern_soundmark = r'<span class="phonetic">(.*?)</span>\r\n'
@@ -188,7 +193,7 @@ def get_en_soundmark(html):
             return soundmark[0]  # 英文音标或美音音标
         else:
             # 程序运行到这里，说明根本没有抓取到音标
-            raise IndexError("没有抓取到英文音标！") 
+            raise IndexError("没有抓取到英文音标！")
     except IndexError:
         # 异常原因1：网页被改变
         # 异常原因2：单词输入错误
@@ -201,6 +206,7 @@ def get_en_soundmark(html):
 # 返回：一个字符串
 # 返回：None，代表不存在翻译结果
 def parse_youdao_trans_en(html):
+    logger.info('程序到达：translate.py-parse_youdao_trans_en函数')
     pattern = r'<div id="fanyi" class="trans-container fanyi\s*">\s*<div class="trans-container \S*\s?">\s*<p>.*?</p>\s*<p>(.*?)</p>\s*<p.*?>.*?</p>'
     trans = re.findall(pattern, html, re.S)
     if trans:
@@ -211,6 +217,7 @@ def parse_youdao_trans_en(html):
 
 
 def get_en_translation_list(html):
+    logger.info('程序到达：translate.py-get_en_translation_list函数')
     # 获取译文：得到的结果必须是列表
     # 正确的英文都应该有译文(不一定有音标)
     logger.info('正在抓取译文')
@@ -255,6 +262,7 @@ def get_en_translation_list(html):
 # 联网失败，返回：None
 # 注意：翻译失败必须返回False或None，否则可能意外通过数据库写入检查！！
 def get_translation_en(content, cover_old=False):
+    logger.info('程序到达：translate.py-get_translation_en函数')
     # 最终必须以下面的结构返回
     result = [str(), list()]
     html = get_en_html(content)
@@ -288,6 +296,7 @@ def get_translation_en(content, cover_old=False):
 # 异常1：['', False]
 # 异常2：None  # 当且仅当未连网时返回的结果
 def get_translation_ch(content):
+    logger.info('程序到达：translate.py-get_translation_ch函数')
     target_dict = get_ch_json(content)
     if target_dict is None:
         return None
@@ -312,6 +321,7 @@ def get_translation_ch(content):
 # 异常1：['', False]  # 翻译不存在
 # 异常2：None  # 未连网
 def get_translation(content):
+    logger.info('程序到达：translate.py-get_translation函数')
     # 未输入任何内容情况下的处理
     if content == "":return ['', False]
     if public.is_english(content):

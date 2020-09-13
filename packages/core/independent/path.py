@@ -25,12 +25,14 @@ logger = logging.getLogger('main.path')
 
 # 包装os.remove()
 def os_remove(filename):
+    logger.info('程序到达：path.py-os_remove函数')
     os.remove(filename)
     logger.info('程序删除了文件：{}'.format(filename))
 
 
 # 包装os.path.exists()
 def path_exist(filename):
+    logger.info('程序到达：path.py-path_exist函数')
     if os.path.exists(filename):
         return True
     return False
@@ -38,6 +40,7 @@ def path_exist(filename):
 
 # 包装os.path.basename()
 def get_basename(filename):
+    logger.info('程序到达：path.py-get_basename函数')
     return os.path.basename(filename)
 
 # =================================
@@ -45,16 +48,19 @@ def get_basename(filename):
 
 # 获取时间字符串
 def _get_strftime(format='%y-%m-%d %H:%M:%S'):
+    logger.info('程序到达：path.py-_get_strftime函数')
     return time.strftime(format)
 
 
 # 获取精确时间字符串
 def _get_detail_strftime():
+    logger.info('程序到达：path.py-_get_detail_strftime函数')
     return str(datetime.datetime.now())
 
 
 # 获取纯数字的20位的精确时间字符串
 def _get_detail_time_now():
+    logger.info('程序到达：path.py-_get_detail_time_now函数')
     detail_time = str(datetime.datetime.now())
     # 去除不需要的符号，设置替换表，并完成替换
     table = '*'.maketrans({sub:None for sub in '-: .'})
@@ -67,6 +73,7 @@ def _get_detail_time_now():
 # 返回：False，当content含有中文、句子过长时
 # 返回：True，当content只含有英文，或是词组时
 def valid_content(content):
+    logger.info('程序到达：path.py-valid_content函数')
     if len(content) > 50:
         logger.info('原文过长，禁止创建数据库！')
         return False
@@ -78,6 +85,7 @@ def valid_content(content):
 
 # 合法的开头英文字符列表
 def get_valid_initial():
+    logger.info('程序到达：path.py-get_valid_initial函数')
     alphabets = 'abcdefghijklmnopqrstuvwxyz'
     numbers = '0123456789'
     # 符号中，仅英文下划线可以作为合法字符
@@ -87,6 +95,7 @@ def get_valid_initial():
 
 # 获取一段字符的首字符小写
 def get_initial(content):
+    logger.info('程序到达：path.py-get_initial函数')
     # 去除两端空白符，并将内容变小写
     content = content.strip().lower()
     initial = content[0]
@@ -97,6 +106,7 @@ def get_initial(content):
 
 # 获取单词前两个字母
 def get_initial2(content):
+    logger.info('程序到达：path.py-get_initial2函数')
     content = content.strip().lower()
     initial2 = content[:2]
     # 不足两位的数字用0补齐，单词用a补齐
@@ -120,6 +130,7 @@ def get_initial2(content):
 
 # 检查路径是否存在，如果不存在，则创建后再返回该路径，否则直接返回
 def create_path(func, count=set()):
+    logger.info('程序到达：path.py-create_path函数')
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         if func not in count:
@@ -136,6 +147,7 @@ def create_path(func, count=set()):
 
 # 获取当前目录的上层目录
 def get_path(p=__file__, n=1):
+    logger.info('程序到达：path.py-get_path函数')
     p = os.path.abspath(p)
     for _ in range(n):
         p = os.path.dirname(p)
@@ -149,6 +161,7 @@ def get_path(p=__file__, n=1):
 @create_path
 def path_init(dirpath, basepath,
               default=None, exist=False):
+    logger.info('程序到达：path.py-path_init函数')
     if default and path_exist(default):
          return default
     path = os.path.join(dirpath, basepath)
@@ -180,7 +193,7 @@ class OwnPath(OriginPath):
         # 配置文件路径
         self.conf = path_init(self.own, 'conf')
         # 日志目录
-        self.log = path_init(self.own, 'log')        
+        self.log = path_init(self.own, 'log')
         # 输入数据目录
         self.i = path_init(self.log, 'input')
         # 调试数据目录
@@ -193,7 +206,7 @@ class OwnPath(OriginPath):
         self.audios = path_init(self.own, 'audios',
                     default='/storage/emulated/0/_audios')
 
-    
+
     # 开发者配置数据文件
     def author_filename(self):
         return os.path.join(self.conf, '.author.conf')

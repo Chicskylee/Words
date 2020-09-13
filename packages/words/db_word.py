@@ -23,6 +23,7 @@ logger = logging.getLogger('main.db_word')
 # 打印给用户查看的内容音标(字符串)和译文(列表)
 # 注意：这里的obj是一个列表，表示给用户查看的音标和翻译
 def print_to_user(content, obj):
+    logger.info('程序到达：db_word.py-print_to_user函数')
     logger.debug('进入给用户打印译文的函数')
     logger.debug('obj:{}'.format(obj))
     if (not obj[0]) and (not obj[1]):
@@ -66,6 +67,7 @@ def print_to_user(content, obj):
 
 # 检查一个单词是否为单词或词组
 def is_word_or_phrase(content):
+    logger.info('程序到达：db_word.py-is_word_or_phrase函数')
     word = word.lower()
     # 定义合法符号
     symbols = "abcdefghijklmnopqrstuvwxyz/'-. ,1234567890"
@@ -81,6 +83,7 @@ def is_word_or_phrase(content):
 # 返回形式1：['音标', ['译文1','译文2']]
 # 返回形式2：None，表示所查单词在综合数据库中不存在
 def get_translation_from_dict(content, db_dict):
+    logger.info('程序到达：db_word.py-get_translation_from_dict函数')
     # 由于本程序不保存中文翻译，故直接返回省得浪费时间
     if not public.is_english(content):
         return None
@@ -90,6 +93,7 @@ def get_translation_from_dict(content, db_dict):
 
 # 判断单词是否在字典中，如果存在，返回结果True
 def content_in_dict(content, db_dict):
+    logger.info('程序到达：db_word.py-content_in_dict函数')
     if not db_dict:
         return False
     if content in db_dict:
@@ -105,6 +109,7 @@ def content_in_dict(content, db_dict):
 # 注意：db='private'时代表写入用户当前数据库
 # 注意：db='public'时代表写入综合数据库
 def write_db_dict(db_dict, content, db):
+    logger.info('程序到达：db_word.py-write_db_dict函数')
     if db == 'private':
         database_name = config.get_database_name()
         f = path.user.word_filename(content, database_name)
@@ -126,6 +131,7 @@ def write_db_dict(db_dict, content, db):
 # 注意：db='private'时代表读取用户当前数据库
 # 注意：db='public'时代表读取综合数据库
 def read_db_dict(content, db):
+    logger.info('程序到达：db_word.py-read_db_dict函数')
     if db == 'private':
         database_name = config.get_database_name()
         f = path.user.word_filename(content, database_name)
@@ -151,6 +157,7 @@ def read_db_dict(content, db):
 # 注意：db='private'时代表 读取 用户当前数据库
 # 注意：db='public'时代表 读取 综合数据库
 def collect_dicts(db):
+    logger.info('程序到达：db_word.py-collect_dicts函数')
     all_dict = dict()
     for initial in [chr(i) for i in range(97,123)]:
         words_dict = read_db_dict(initial, db)
@@ -164,6 +171,7 @@ def collect_dicts(db):
 # 注意：db='private'时代表 读取 用户当前数据库
 # 注意：db='public'时代表 读取 综合数据库
 def collect_dicts_iterator(db):
+    logger.info('程序到达：db_word.py-collect_dicts_iteratior函数')
     for initial in [chr(i) for i in range(97,123)]:
         words_dict = read_db_dict(initial, db)
         if words_dict is not None:
@@ -176,6 +184,7 @@ def collect_dicts_iterator(db):
 # 注意：db='private'时代表 获取 用户当前数据库单词量
 # 注意：db='public'时代表 获取 综合数据库单词量
 def get_words_total(db):
+    logger.info('程序到达：db_word.py-get_words_total函数')
     words_total = 0
     for initial in [chr(i) for i in range(97,123)]:
         words_dict = read_db_dict(initial, db)
@@ -191,6 +200,7 @@ def get_words_total(db):
 # 返回：添加成功的标志True或False
 # 注意：该函数目前不要用，因为最好不要允许用户修改音标
 def add_content(content, translation, db):
+    logger.info('程序到达：db_word.py-add_content函数')
     # 译文的正确性检查
     if translation[-1] == False:
         return False
@@ -211,6 +221,7 @@ def add_content(content, translation, db):
 # 注意：db='private'时代表 操作 用户当前数据库
 # 注意：db='public'时代表 操作 综合数据库
 def change_content_count(content, db, operate='+'):
+    logger.info('程序到达：db_word.py-change_content_count函数')
     db_dict = read_db_dict(content, db)
     # 字典为空，直接返回
     if not db_dict: return False
@@ -235,6 +246,7 @@ def change_content_count(content, db, operate='+'):
 # 注意：db='private'时代表 操作 用户当前数据库
 # 注意：db='public'时代表 操作 综合数据库
 def delete_content_from_dict(content, db):
+    logger.info('程序到达：db_word.py-delete_content_from_dict函数')
     db_dict = read_db_dict(content, db)
     # 字典为空，直接返回
     if not db_dict: return False
@@ -254,6 +266,7 @@ def delete_content_from_dict(content, db):
 # 注意：db='public'时代表 操作 综合数据库
 @public.timeit
 def export_pure_content_to_txt(db):
+    logger.info('程序到达：db_word.py-export_pure_content_to_txt函数')
     database_name = config.get_database_name()
     filename = path.user_path.export_fmt_filename(database_name, fmt='txt')
     with open(filename, 'wb') as f:
@@ -280,6 +293,7 @@ def export_pure_content_to_txt(db):
 # 检查两个字典中存在的差异
 # 函数需要检查出哪部分是增加和减少的键值对，哪部分是值被修改的
 def dict_difference(dict1, dict2):
+    logger.info('程序到达：db_word.py-dict_difference函数')
     print('不同内容不同：')
     # 新增
     # 减少
@@ -289,6 +303,7 @@ def dict_difference(dict1, dict2):
 # 合并当前用户的单词库到综合数据库
 # 不需要传入参数
 def _add_user_words_to_public_db():
+    logger.info('程序到达：db_word.py-_add_user_words_to_public_db函数')
     # 汇总以initial开头的词库
     # 当 check=True 时，并未真正汇总
     def summary_db(initial, check=True):

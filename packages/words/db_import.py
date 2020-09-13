@@ -27,6 +27,7 @@ logger = logging.getLogger('main.db_import')
 
 # 查单词，并将查找的译文写入数据库
 def automatic_lookup_content(content, db_dict_private, db_dict_public):
+    logger.info('程序到达：db_import.py-automatic_lookup_content函数')
     logger.info('content:{}'.format(content))
     # 从数据库中获取翻译内容
     # 首先进入当前数据库尝试获取译文
@@ -66,6 +67,7 @@ def automatic_lookup_content(content, db_dict_private, db_dict_public):
 
 @public.timeit
 def main(enabled):
+    logger.info('程序到达：db_import.py-main函数')
     if enabled not in ['*i', '*import']:
         return None
     # 第零步、确认是否将单词自动汇入当前数据库中

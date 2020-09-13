@@ -24,6 +24,7 @@ logger = logging.getLogger('main.collect')
 # 定义非法符号
 # 注意：下划线默认为是合法符号
 def invalid_symbols():
+    logger.info('程序到达：collect.py-invalid_symbols函数')
     symbols = [',', '.', '=', '+', '-', '*', '/',
     '%', '￥', '!', ':', ';', '…', '?', "'", '"',
     '~', '"', '@', '(', ')', '<', '>', '{', '}',
@@ -57,6 +58,7 @@ def invalid_symbols():
 
 
 def my_input(prompt):
+    logger.info('程序到达：collect.py-my_input函数')
     sys.stdout.write(prompt)
     sys.stdout.flush()
     content = sys.stdin.readline()[:-1]
@@ -70,6 +72,7 @@ def my_input(prompt):
 # retry：出现异常后允许重新获取输入的次数
 # getpwd：传入True时，将隐藏输入内容
 def get_input(prompt=None, retry=0, getpwd=False, strip_all=False):
+    logger.info('程序到达：collect.py-get_input函数')
     prompt = '' if prompt is None else str(prompt)
     for i in range(retry+1):
         # 捕获QPython输入中文后再删除导致的异常
@@ -89,6 +92,7 @@ def get_input(prompt=None, retry=0, getpwd=False, strip_all=False):
 # ---------------------------------
 # 获取要翻译的内容
 def get_content():
+    logger.info('程序到达：collect.py-get_content函数')
     print('-'*45)
     prompt = '请输入要翻译的内容：'
     content = get_input(prompt=prompt, retry=3)
@@ -98,6 +102,7 @@ def get_content():
 # ---------------------------------
 # 判断database_name是否为合法的格式
 def valid_database_name(database_name):
+    logger.info('程序到达：collect.py-valid_database_name函数')
     # 屏幕宽度不可以超过11
     if public.real_width_in_screen(database_name) > 11:
         return False
@@ -113,6 +118,7 @@ def valid_database_name(database_name):
 # 返回：数据库名称，字符串
 # 异常返回：None
 def get_database_name(prompt=None):
+    logger.info('程序到达：collect.py-get_database_name函数')
     if prompt is None:
         prompt = '请输入数据库名称：'
     for times in range(3, 0, -1):
@@ -140,6 +146,7 @@ def get_database_name(prompt=None):
 
 # 检查用户名的输入是否符合正确格式
 def valid_username(username):
+    logger.info('程序到达：collect.py-valid_username函数')
     if not isinstance(username, str):
         return False
     if len(username) < 3:
@@ -150,6 +157,7 @@ def valid_username(username):
 
 # 从用户获取用户名
 def get_username(prompt=None):
+    logger.info('程序到达：collect.py-get_username函数')
     if prompt is None:
         prompt = '请输入用户名：'
     for times in range(3, 0, -1):
@@ -177,6 +185,7 @@ def get_username(prompt=None):
 
 # 检查email合适是否正确
 def valid_email(email):
+    logger.info('程序到达：collect.py-valid_email函数')
     if not isinstance(email, str):
         return False
     if len(email) < 5:
@@ -196,6 +205,7 @@ def valid_email(email):
 # 返回：电子邮件地址
 # 异常返回：None
 def get_email(prompt=None):
+    logger.info('程序到达：collect.py-get_email函数')
     if prompt is None:
         prompt = '请输入邮箱：'
     for times in range(3, 0, -1):
@@ -221,6 +231,7 @@ def get_email(prompt=None):
 
 # 检查密码的输入是否符合正确格式
 def valid_password(password):
+    logger.info('程序到达：collect.py-valid_password函数')
     if not isinstance(password, str):
         return False
     if 6 <= len(password) <= 50:
@@ -231,6 +242,7 @@ def valid_password(password):
 
 # 检查密码长度是否符合正确格式
 def valid_password_length(password_length):
+    logger.info('程序到达：collect.py-valid_password_length函数')
     if not isinstance(password_length, int):
         return False
     if 6 <= password_length <= 50:
@@ -241,6 +253,7 @@ def valid_password_length(password_length):
 
 # 生成指定长度的随机密码，并返回密码字符串
 def create_password(length):
+    logger.info('程序到达：collect.py-create_password函数')
     # 所有数字字符
     numbers = '0123456789'
     # 所有小写字母
@@ -260,6 +273,7 @@ def create_password(length):
 
 # 从用户获取将要自动生成的密码长度
 def get_password_length(prompt=None):
+    logger.info('程序到达：collect.py-get_password_length函数')
     if prompt is None:
         prompt = '请输入密码长度：'
     for times in range(3, 0, -1):
@@ -291,6 +305,7 @@ def get_password_length(prompt=None):
 # 自动生成随机密码
 # 如果3此生成的密码都令人不满意，返回None
 def auto_create_password():
+    logger.info('程序到达：collect.py-auto_create_password函数')
     for times in range(3, 0, -1):
         length = get_password_length()
         password = create_password(length=length)
@@ -306,6 +321,7 @@ def auto_create_password():
 
 # 手动输入密码
 def manual_create_password(prompt=None):
+    logger.info('程序到达：collect.py-manual_create_password函数')
     if prompt is None:
         prompt = '请输入密码(6<=长度<=50)：'
     for times in range(3, 0, -1):
@@ -330,6 +346,7 @@ def manual_create_password(prompt=None):
 
 # 获取密码
 def get_password(prompt=None):
+    logger.info('程序到达：collect.py-get_password函数')
     if prompt is None:
         prompt = '自动生成密码(确认Enter，手工输入*)：'
     for times in range(3, 0, -1):

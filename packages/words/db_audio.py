@@ -34,6 +34,7 @@ logger = logging.getLogger('main.db_audio')
 # 若传入compressed_filename，则将压缩后的字节串写入该文件，
 # 否则，就将压缩后的字节串直接返回
 def compress_audio(mp3_filename, compressed_filename=None):
+    logger.info('程序到达：db_audio.py-compress_audio函数')
     logger.info('正在压缩音频数据')
     with open(mp3_filename, 'rb') as f:
         content = f.read()
@@ -58,6 +59,7 @@ def compress_audio(mp3_filename, compressed_filename=None):
 # 若传入了参数mp3_filename，
 # 则还会将解压缩后的内容写入文件，否则直接返回解压缩后的内容
 def decompress_audio(byte_strings=None, compressed_filename=None, mp3_filename=None):
+    logger.info('程序到达：db_audio.py-decompress_audio函数')
     if byte_strings is not None:
         decompressed = zlib.decompress(byte_strings)
     elif compressed_filename is not None:
@@ -95,6 +97,7 @@ def decompress_audio(byte_strings=None, compressed_filename=None, mp3_filename=N
 # 该字典中的内容为：{单词1:[英音音频0, 美音音频1], ...}
 # cover_old：传入True时，将覆盖原有数据
 def add_audio(content, audio_type, mp3_filename, audio_filename, cover_old=False):
+    logger.info('程序到达：db_audio.py-add_audio函数')
     if not path.path_exist(audio_filename):
         public.write_pickle(dict(), audio_filename)
     audio_dict = public.read_pickle(audio_filename)
@@ -144,6 +147,7 @@ def add_audio(content, audio_type, mp3_filename, audio_filename, cover_old=False
 # 注意：数据库或数据不存在时，返回None
 # audio_type：音频类型，0为英音音频，1为美音音频
 def get_audio_bytes_from_pickle(content, audio_type):
+    logger.info('程序到达：db_audio.py-get_audio_bytes_from_pickle函数')
     # 获取音频数据库名称路径
     pk_filename = path.own.audio_filename(content)
     if not path.path_exist(pk_filename):
@@ -170,6 +174,7 @@ def get_audio_bytes_from_pickle(content, audio_type):
 # audio_type：指播放英音指定为0，美音指定为1
 # sleep_time：音频播放时间
 def word_play(content, play=True, audio_type=0, debug=False):
+    logger.info('程序到达：db_audio.py-word_play函数')
     # 如果确定不播放音频，则跳过
     if not play:return False
     # -------------------------
@@ -205,6 +210,7 @@ def word_play(content, play=True, audio_type=0, debug=False):
 # 从数据库播放音频
 # debug：传入为True时，将在播放音频后，不删除音频文件
 def audio_play(content, play=True):
+    logger.info('程序到达：db_audio.py-audio_play函数')
     logger.info('程序进入音频查找和播放函数')
     try:
         play_result = word_play(content, audio_type=0, play=play)
@@ -233,6 +239,7 @@ def audio_play(content, play=True):
 # 返回：True，表明总库被改变；False，表明总库没有改变
 # 注意：audios_pk_filename1是总库，audios_pk_filename2是私库
 def _change_audios(audios_pk_filename1, audios_pk_filename2, cover_old=False):
+    logger.info('程序到达：db_audio.py-_change_audios函数')
     audios_bytes_dict1 = public.read_pickle(audios_pk_filename1)
     audios_bytes_dict2 = public.read_pickle(audios_pk_filename2)
     # 用于确认总库是否被改变了
@@ -266,6 +273,7 @@ def _change_audios(audios_pk_filename1, audios_pk_filename2, cover_old=False):
 # 注意：请手动在path.py中设置总音频库和私库的文件夹路径
 # 注意：千万不要写颠倒总音频库和私音频库，否则将丢失音频数据！
 def _merge_audios(public_path, private_path):
+    logger.info('程序到达：db_audio.py-_merge_audios函数')
     initials = 'abcdefghijklmnopqrstuvwxyz'
     for initial in initials:
         for initial2 in initials:

@@ -35,6 +35,7 @@ logger = logging.getLogger('main.manager')
 # 更新配置文件，并重新导出单词数据到TXT格式的单词本
 @public.timeit
 def update_config():
+    logger.info('程序到达：manager.py-update_config函数')
     logger.info('程序进入配置文件更新函数')
     print('正在更新配置文件，请稍后……')
     # 获取单词总数
@@ -46,6 +47,7 @@ def update_config():
 
 # 根据用户输入的内容，判断是否退出程序
 def judge_exit(content, prompt=None):
+    logger.info('程序到达：manager.py-judge_exit函数')
     logger.info('程序进入判定程序是否退出函数')
     if content not in ['@', ',', '，', '']:
         return None
@@ -60,6 +62,7 @@ def judge_exit(content, prompt=None):
 # 存在译文，返回：译文内容
 # 不存在译文，返回：None
 def get_translation_from_db(content, write_flag=True):
+    logger.info('程序到达：manager.py-get_translation_from_db函数')
     logger.info('程序进入从数据库获取译文函数')
     # 首先进入当前数据库尝试获取译文
     db_dict = db_word.read_db_dict(content, db='private')
@@ -99,6 +102,7 @@ def get_translation_from_db(content, write_flag=True):
 # 查单词
 # 仅当write_flag=True时，查找的译文记录将写入数据库
 def lookup_content(content, write_flag=True):
+    logger.info('程序到达：manager.py-lookup_content函数')
     logger.info('程序进入正常查找译文函数')
     # 从数据库中获取翻译内容
     translation_list = get_translation_from_db(content, write_flag=write_flag)
@@ -143,6 +147,7 @@ def lookup_content(content, write_flag=True):
 # 给用户提供的帮助文档
 # enabled：仅当其值为'*h'或'*help'时被激活
 def help_user(enabled):
+    logger.info('程序到达：manager.py-help_user函数')
     if enabled not in ['*h', '*help']:
         return False
     compatible.clear_screen()
@@ -178,6 +183,7 @@ def help_user(enabled):
 # 解析enabled和content
 # 解析enabled命令有如下要求
 def parse_enabled_and_content(content):
+    logger.info('程序到达：manager.py-parse_enabled_and_content函数')
     # 注意：此处星号必须放在最后；完整的必须放在简写之前！！
     symbols = (
         '*filter', '*f',  # 正则匹配过滤单词
@@ -212,6 +218,7 @@ def parse_enabled_and_content(content):
 # 让用户可以重听音频
 # enabled：仅当传入'*a'和'*again'时激活此函数
 def audio_repeat(enabled, content):
+    logger.info('程序到达：manager.py-audio_repeat函数')
     if enabled not in ['*a', '*again']:
         # 用户未要求重播音频
         return None
@@ -240,6 +247,7 @@ def audio_repeat(enabled, content):
 
 # 汇总用户词库到公共词库
 def summary_user_words(enabled):
+    logger.info('程序到达：manager.py-summary_user_words函数')
     if enabled not in ['*s', '*summary']:
         # 用户未要求汇总用户词库到公共词库
         return None
@@ -263,6 +271,7 @@ def summary_user_words(enabled):
 
 # 汇总用户音频到总音频库
 def merge_audios(enabled):
+    logger.info('程序到达：manager.py-merge_audios函数')
     if enabled not in ['*m', '*merge']:
         # 用户未要求汇总用户音频到总音频库
         return None
@@ -291,6 +300,7 @@ def merge_audios(enabled):
 # 仅查找译文内容，译文内容不写入数据库
 # enabled：仅当传入'-'时激活此函数
 def lookup_only(enabled, content):
+    logger.info('程序到达：manager.py-lookup_only函数')
     if enabled != '-':
         return None
     logger.debug('进入仅查找译文函数')
@@ -302,6 +312,7 @@ def lookup_only(enabled, content):
 # 获得更多译文内容，且译文内容不写入数据库
 # enabled：仅当传入'+'时激活此函数
 def lookup_more(enabled, content):
+    logger.info('程序到达：manager.py-lookup_more函数')
     if enabled != '+':
         return None
     logger.debug('进入扩展翻译函数，将可以翻译句子')
@@ -317,6 +328,7 @@ def lookup_more(enabled, content):
 
 # 用于更改个人单词译文
 def change_main(enabled, content):
+    logger.info('程序到达：manager.py-change_main函数')
     if enabled not in ['*c', '*change']:
         return None
     if not content:
@@ -377,6 +389,7 @@ def change_main(enabled, content):
 
 # 删除用户不想要的单词及其译文
 def delete_main(enabled, content):
+    logger.info('程序到达：manager.py-delete_main函数')
     if enabled not in ['*d', '*delete']:
         return None
     if not content:
@@ -398,6 +411,7 @@ def delete_main(enabled, content):
 # 更多操作函数
 # 用于扩展用户操作
 def more_operator(enabled, content):
+    logger.info('程序到达：manager.py-more_operator函数')
     # 给用户返回帮助内容
     if enabled in ['*h', '*help']:
         help_user(enabled)
@@ -446,6 +460,7 @@ def more_operator(enabled, content):
 
 
 def main():
+    logger.info('程序到达：manager.py-main函数')
     logger.info('\n{}主函数{}'.format('='*12, '='*12))
     config.check_config()
     threading.Thread(target=db_backup.backup_data).start()

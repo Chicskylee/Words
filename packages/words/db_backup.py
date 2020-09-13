@@ -23,6 +23,7 @@ logger = logging.getLogger('main.db_backup')
 
 # 压缩进度条的实现
 def progress_bar(completed, total, prompt=''):
+    logger.info('程序到达：db_backup.py-progress_bar函数')
     rate = completed / total
     symbols_all_len = 35
     compressed_symbols_len = int(symbols_all_len*rate)
@@ -38,6 +39,7 @@ def progress_bar(completed, total, prompt=''):
 
 # 获取文件夹中内容的总大小
 def get_filesize(path):
+    logger.info('程序到达：db_backup.py-get_filesize函数')
     size_total = 0
     for path, _, names in os.walk(path):
         for name in names:
@@ -55,6 +57,7 @@ def get_filesize(path):
 def make_zip(source_path, zip_filename,
              ban_names=None, auto=False,
              print_prompt=True):
+    logger.info('程序到达：db_backup.py-mate_zip函数')
     # 把所有的windows文件路径分隔符'\'改为'/'
     source_path = source_path.replace('\\', '/')
     # 去除行尾的路径分隔符
@@ -125,6 +128,7 @@ def make_zip(source_path, zip_filename,
 # per_day：用来指定每几天备份一次
 # auto：当为False时，如果当天已经备份，会询问是否重新备份
 def backup_words_data(per_day=4, auto=True, print_prompt=False):
+    logger.info('程序到达：db_backup.py-backup_words_data函数')
     # 获取今天的日期
     today = int(public.get_strftime("%d"))
     # 首先判断今天是否需要备份，如果计算结果是0则需要备份
@@ -160,6 +164,7 @@ def backup_words_data(per_day=4, auto=True, print_prompt=False):
 # per_day：每几天备份一次
 # auto：如果当天已经备份，该参数传入False将允许用户确认重新备份，否则不再备份
 def backup_data(per_day=5, auto=True):
+    logger.info('程序到达：db_backup.py-backup_data函数')
     logger.info('程序进入备份数据和配置文件更新函数')
     # 备份数据
     backup_result = backup_words_data(per_day=per_day, auto=auto)

@@ -28,6 +28,7 @@ logger = logging.getLogger('main.translate_expend')
 # 获取待翻译内容的url
 # 返回：字符串，代表url
 def get_url(content):
+    logger.info('程序到达：translate_expend.py-get_url函数')
     #url_template = 'http://www.youdao.com/w/eng/{content}'
     url_template = 'http://dict.youdao.com/search?q={content}&keyfrom=new-fanyi.smartResult'
     url = url_template.format(content=content)
@@ -36,12 +37,14 @@ def get_url(content):
 
 # 将html写入文件
 def write_html(html, content):
+    logger.info('程序到达：translate_expend.py-write_html函数')
     filename = path.user.html_filename(name=content)
     public.write(html, filename)
 
 
 # 读取html文件内容
 def read_html(content):
+    logger.info('程序到达：translate_expend.py-read_html函数')
     filename = path.user.html_filename(name=content)
     if not path.path_exist(filename):
         return None
@@ -52,6 +55,7 @@ def read_html(content):
 # 注意：暂时只用于获取有道翻译的网页内容
 @public.retry_decorator(prompt='网络超时中断，正在重试...', force_return=True)
 def get_html(url):
+    logger.info('程序到达：translate_expend.py-get_html函数')
     try:
         response = urllib.request.urlopen(url, timeout=5)
     except urllib.error.URLError:
@@ -74,6 +78,7 @@ def get_html(url):
 
 # 解析网页的内容区域
 def parse_scontainer(html):
+    logger.info('程序到达：translate_expend.py-parse_scontainer函数')
     pattern = r'<!-- 内容区域 -->(.*?)<!-- 内容区域 -->'
     scontainer = re.findall(pattern, html, re.S)
     if not scontainer:
@@ -94,6 +99,7 @@ def parse_scontainer(html):
 # 返回：任何未获取成功的值将被替换成None，即 [None, None, None, None]
 # 返回：所有值都是None，则返回 None
 def parse_basis(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_basis函数')
     # 单词
     pattern_word = r'<span class="keyword">(.*?)</span>'
     word = re.findall(pattern_word, scontainer, re.S)
@@ -130,6 +136,7 @@ def parse_basis(scontainer):
 # 返回：[(str:原文, str:译文), ...]
 # 返回：None
 def parse_phrases(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_phrases函数')
     # 缩小范围：获得所有词组的div
     pattern_phrases_container = r'<div id="wordGroup".*?>.*?</div>'
     phrases_container = re.findall(pattern_phrases_container, scontainer, re.S)
@@ -152,6 +159,7 @@ def parse_phrases(scontainer):
 # 注意：这部分代码较多，属于正则表达式没有学好，等学好了再重写
 # 争取下次重写后，一个匹配模式完成所有匹配(而不是现在的4个)
 def parse_web_phrases(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_web_phrases函数')
     # 缩小范围：获得所有词组的div
     pattern_web_phrases_container = r'<div id="webPhrase".*?>\s*<div class="title">短语</div>(.*?)</div>'
     web_phrases_container = re.findall(pattern_web_phrases_container, scontainer, re.S)
@@ -174,6 +182,7 @@ def parse_web_phrases(scontainer):
 # 返回：一个字符串
 # 返回：None，代表不存在翻译结果
 def parse_youdao_trans_en(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_youdao_trans_en函数')
     pattern = r'<div id="fanyiToggle">\s*<div class="trans-container">\s*<p>.*?</p>\s*<p>(.*?)</p>\s*<p>.*?<a.*?>'
     trans = re.findall(pattern, scontainer, re.S)
     if trans:
@@ -185,6 +194,7 @@ def parse_youdao_trans_en(scontainer):
 # 返回：None，有译文的情况下
 # 返回：非空列表,[(str:可能的原文, str:可能的原文的翻译), ...]
 def parse_error_wrapper(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_error_wrapper函数')
     pattern_error_wrapper = r'<div class="error-wrapper">(.*?)</div>'
     error_wrapper = re.findall(pattern_error_wrapper, scontainer, re.S)
     if not error_wrapper:
@@ -199,6 +209,7 @@ def parse_error_wrapper(scontainer):
 # 获得基础解释
 # 返回：[[原文, 拼音, [(词性, 译文), ], ...], [(词语辨析英文, 词语辨析解释)]]
 def parse_basis_ch(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_basis_ch函数')
     # 单词：中文通用
     pattern_word = r'<span class="keyword">(.*?)</span>'
     word = re.findall(pattern_word, scontainer, re.S)
@@ -238,6 +249,7 @@ def parse_basis_ch(scontainer):
 # 获取网络释义
 # 返回：列表
 def parse_web_translation_ch(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_web_translation_ch函数')
     pattern_web_translation = r'<div class="wt-container wt-collapse">\s*<div class="title">\s*<a.*?>.*?</a>\s*<span.*?>\s*(.*?)</span>\s*</div>'
     web_translation = re.findall(pattern_web_translation, scontainer, re.S)
     # 删除专有名词排版代码
@@ -248,6 +260,7 @@ def parse_web_translation_ch(scontainer):
 
 # 解析词语辨析
 def parse_words_analysis_ch(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_words_analysis_ch函数')
     pattern_words_analysis = r'<div class="wordGroup">\s*<p>\s*<span class="contentTitle">\s*<a class=.*?>(.*?)</a>\s*</span>\s*(.*?)\s*</p>\s*</div>'
     words_analysis = re.findall(pattern_words_analysis, scontainer, re.S)
     #print('打印词语辨析：', words_analysis)
@@ -260,6 +273,7 @@ def parse_words_analysis_ch(scontainer):
 # 返回：一个字符串
 # 返回：None，代表不存在翻译结果
 def parse_youdao_trans(scontainer):
+    logger.info('程序到达：translate_expend.py-parse_youdao_trans函数')
     pattern = r'<div id="fanyiToggle">\s*<div class="trans-container">\s*<p>.*?</p>\s*<p>(.*?)</p>\s*<p>.*?<a.*?>'
     trans = re.findall(pattern, scontainer, re.S)
     if trans:
@@ -270,6 +284,7 @@ def parse_youdao_trans(scontainer):
 # =================================
 
 def youdao_translate_ch(content):
+    logger.info('程序到达：translate_expend.py-Youdao_translate_ch函数')
     # 获取中文原文的翻译内容
     logger.info('程序进入youdao_translate_ch()')
     content_encoded = public.str_encode(content)
@@ -301,6 +316,7 @@ def youdao_translate_ch(content):
 # 返回：字典，如果存在译文的情况下
 # 返回：None，有道翻译认为译文错误
 def youdao_translate_en(content):
+    logger.info('程序到达：translate_expend.py-youdao_translate_en函数')
     logger.info('程序进入英文扩展翻译函数youdao_translate_en()')
     url = get_url(content)
     html = read_html(content) or get_html(url)
@@ -328,6 +344,7 @@ def youdao_translate_en(content):
 
 
 def view_en(result):
+    logger.info('程序到达：translate_expend.py-view_en函数')
     if result is None: return None
     basis = result['basis']
     phrases = result['phrases']
@@ -377,6 +394,7 @@ def view_en(result):
 
 
 def view_ch(result):
+    logger.info('程序到达：translate_expend.py-view_ch函数')
     basis = result['basis']
     analysis = result['analysis']
     web_translation = result['web_translation']
@@ -411,6 +429,7 @@ def view_ch(result):
 
 
 def youdao_translate(content):
+    logger.info('程序到达：translate_expend.py-youdao_translate函数')
     # 该代码仅用来获取翻译内容，并不存储数据库
     if public.is_english(content):
         # 获取英文译文
@@ -426,8 +445,6 @@ def youdao_translate(content):
             # 可能网络连接不正常，已给出提示
             return None
         view_ch(result)
-
-
     if public.is_english(content):
         # 获取英文译文
         result = youdao_translate_en(content)
