@@ -66,28 +66,62 @@ def my_input(prompt):
     return content
 
 
-# 数据获取函数
-
 # 获取用户输入，并返回用户输入的内容
 # retry：出现异常后允许重新获取输入的次数
 # getpwd：传入True时，将隐藏输入内容
-def get_input(prompt=None, retry=0, getpwd=False, strip_all=False):
-    logger.debug('程序到达：collect.py-get_input函数')
+# getnum：传入True时，只有获得一个数字才会返回
+# error_exit：当为True时，函数将在未正确获取内容时退出程序；当为False时将抛出异常NameError
+# error_prompt：函数退出时的提示
+# strip_all：传入True时，将去除输入内容两端的空白符
+# default：如果传入了值，则当用户输入值与activate_default相同时返回default的值
+# activate_default：为字符串时，当用户输入内容与该值相同时返回default
+# activate_default：为列表时，当用户输入内容为该值元素时返回default
+def get_input(prompt=None, retry=0,
+              getpwd=False, getnum=False,
+              strip_all=False,
+              error_exit=False, error_prompt=None,
+              default=None, activate_default=None):
     prompt = '' if prompt is None else str(prompt)
     for i in range(retry+1):
         # 捕获QPython输入中文后再删除导致的异常
         try:
             if getpwd:
                 str_input = getpass.getpass(prompt)
+            elif getnum:
+                str_input = my_input(prompt)
+                if default is not None:
+                    if isinstance(activate_default, str):
+                        if activate_default == str_input:
+                            return default
+                    if isinstance(activate_default, (list, tuple, set)):
+                        if str_input in activate_default:
+                            return default
+                if is_number(str_input):
+                    return str_input
+                else:
+                    continue
             else:
                 str_input = str(my_input(prompt))
+                if default is not None:
+                    if isinstance(activate_default, str):
+                        if activate_default == str_input:
+                            return default
+                    if isinstance(activate_default, (list, tuple, set)):
+                        if str_input in activate_default:
+                            return default
             if strip_all:
                 str_input = str_input.strip()
             return str_input
         except UnicodeDecodeError:
             print('输入异常，请重试！')
             continue
-    raise NameError('没有正确获取输入内容！')
+    if error_exit:
+        if error_prompt is None:
+            error_prompt='没有正确获取内容，已退出！'
+        public.exit_program(error_prompt, pause=False)
+    else:
+        raise NameError('没有正确获取输入内容！')
+
 
 # ---------------------------------
 # 获取要翻译的内容
