@@ -31,6 +31,8 @@ logger = logging.getLogger('main.email')
 # =================================
 
 # 读取用户配置文件
+# author：为True，则当无程序签名时，程序强制退出；否则继续运行
+@public.execute_func(execute=public.AUTHOR, result=False)
 def read_author_config():
     logger.debug('程序到达：emails.py-read_author_config函数')
     author_filename = path.own.author_filename()
@@ -52,7 +54,6 @@ def author_pwd():
     return read_author_config()['pwd']
 
 
-
 # =================================
 
 # 格式化签名
@@ -72,9 +73,11 @@ def mail_body(*args):
     for describe, value in args:
         content += '\n<p>{}：{}</p>'.format(describe, value)
     return template.format(content)
+
 # =================================
 
 # 发送纯文本格式的邮件
+@public.execute_func(execute=public.AUTHOR, result=False)
 def send_plain_email(receiver_address,
            email_subject, email_body):
     logger.debug('程序到达：emails.py-send_plain_email函数')
@@ -123,6 +126,7 @@ def send_plain_email(receiver_address,
 
 
 # 发送带有附件的邮件
+@public.execute_func(execute=public.AUTHOR, result=False)
 def send_attachment_email(receiver_address,
         email_subject, email_body,
         attachment_filename, attachment_type,

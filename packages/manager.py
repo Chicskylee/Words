@@ -157,25 +157,23 @@ def help_user(enabled):
     print('符号{}意义'.format(space*15))
     print('-'*45)
     print('*h(help){}查看帮助'.format(space*7))
-    print('*a(again){}重播音频'.format(space*6))
     print('*f(filter){}单词过滤'.format(space*5))
     print('*e(export){}导出数据库'.format(space*5))
     print('*i(import){}导入数据库'.format(space*5))
     print('*s(summary){}汇总数据库'.format(space*4))
     print('*m(merge){}汇总音频'.format(space*6))
-    print('*c(change){}译文修改'.format(space*5))
-    print('*d(delete){}删除单词'.format(space*5))
     print('*r(revise){}单词复习'.format(space*5))
     print('*{}设置数据库'.format(space*14))
-    print('+{}查找单词时显示更多内容'.format(space*14))
-    print('-{}不将查找的单词写入数据库'.format(space*14))
+    print('[单词]*a(again){}重播音频'.format(space*6))
+    print('[单词]*c(change){}译文修改'.format(space*5))
+    print('[单词]*d(delete){}删除单词'.format(space*5))
+    print('[单词]+{}查找单词时显示更多内容'.format(space*14))
+    print('[单词]-{}不将查找的单词写入数据库'.format(space*14))
     print('-'*45)
     print('{}Android操作指南'.format(space*14))
     print('想要导出综合库：请复制综合库到用户库文件夹\n'
           '设置导出文件夹：请创建空文件夹_user/export\n'
-          '设置导入文件夹：请创建空文件夹_user/import\n'
-          '若想要重播单词：请输入*a [单词]\n'
-          '若想要修改译文：请输入*c [单词]')
+          '设置导入文件夹：请创建空文件夹_user/import')
     print('='*45)
     collect.get_input(prompt='按任意键退出帮助：')
 
@@ -332,8 +330,8 @@ def change_main(enabled, content):
     if enabled not in ['*c', '*change']:
         return None
     if not content:
-        print(compatible.colorize(text='要修改译文请用命令：*c 单词', color='cyan'))
-        print(compatible.colorize(text='要修改译文请用命令：*change 单词', color='cyan'))
+        print(compatible.colorize(text='要修改译文请用命令：[单词] *c', color='cyan'))
+        print(compatible.colorize(text='要修改译文请用命令：[单词] *change', color='cyan'))
         return None
     logger.debug('进入自定义译文函数，用户将自定义译文')
     translation_list = get_translation_from_db(content, write_flag=False)
@@ -386,15 +384,14 @@ def change_main(enabled, content):
             print('更改失败！没有更改{}的译文！'.format(content))
 
 
-
 # 删除用户不想要的单词及其译文
 def delete_main(enabled, content):
     logger.debug('程序到达：manager.py-delete_main函数')
     if enabled not in ['*d', '*delete']:
         return None
     if not content:
-        print(compatible.colorize(text='要删除单词请用命令：*d 单词', color='cyan'))
-        print(compatible.colorize(text='要删除单词请用命令：*delete 单词', color='cyan'))
+        print(compatible.colorize(text='要删除单词请用命令：[单词] *d', color='cyan'))
+        print(compatible.colorize(text='要删除单词请用命令：[单词] *delete', color='cyan'))
         return None
     logger.debug('进入删除单词数据函数')
     choice = collect.get_input(prompt='退出(Enter)，确认删除{}的单词数据(*)：'.format(content))
@@ -405,7 +402,6 @@ def delete_main(enabled, content):
         logger.info('开始删除个人数据库中{}单词的数据'.format(content))
         db_word.delete_content_from_dict(content, db='private')
         print('已经删除单词{}的数据'.format(content))
-
 
 
 # 更多操作函数
@@ -458,28 +454,36 @@ def more_operator(enabled, content):
         return None
 
 
-
 def main():
     logger.debug('程序到达：manager.py-main函数')
-    logger.info('\n{}主函数{}'.format('='*12, '='*12))
-    config.check_config()
-    threading.Thread(target=db_backup.backup_data).start()
+    logger.info('\n{}主函数{}'.format('='*19, '='*20))
     compatible.clear_screen(debug=public.DEBUG)
+    logger.debug('\n{}manager - main函数标记点00{}'.format('-'*9, '-'*10))
+    config.check_config()
+    logger.debug('\n{}manager - main函数标记点01{}'.format('-'*9, '-'*10))
+    threading.Thread(target=db_backup.backup_data).start()
+    logger.debug('\n{}manager - main函数标记点02{}'.format('-'*9, '-'*10))
     # 给用户打印数据库单词数量提示
     config.print_config()
-    logger.info('\n{}循环块{}'.format('+'*12, '+'*12))
+    logger.debug('\n{}manager - main函数标记点03{}'.format('-'*9, '-'*10))
+    logger.info('\n{}循环块{}'.format('+'*19, '+'*20))
     # 统计循环次数
     count = 0
+    split_len = int((45-3-8)//2)
     while True:
         count += 1
-        split_len = int((30-len(str(count))-8)//2)
-        logger.info('\n{}第{:02d}次循环{}'.format('-'*split_len, count, '-'*split_len))
+        logger.info('\n{}第{:03d}次循环{}'.format('-'*split_len, count, '-'*split_len))
+        logger.debug('\n{}manager - main函数标记点04{}'.format('-'*9, '-'*10))
         # 查单词流程正式开始
         content = collect.get_content()
+        logger.debug('\n{}manager - main函数标记点05{}'.format('-'*9, '-'*10))
         enabled, content = parse_enabled_and_content(content)
+        logger.debug('\n{}manager - main函数标记点06{}'.format('-'*9, '-'*10))
         # 确保写入数据库的单词两端无空白符
         content = content.strip()
+        logger.debug('\n{}manager - main函数标记点07{}'.format('-'*9, '-'*10))
         more_operator(enabled=enabled, content=content)
+        logger.debug('\n{}manager - main函数标记点08{}'.format('-'*9, '-'*10))
         if enabled in ('*h', '*help',
                        '*e', '*export',
                        '*i', '*import',
@@ -491,11 +495,15 @@ def main():
                        '*r', '*revise',
                        '-', '+', '*'):
             continue
+        logger.debug('\n{}manager - main函数标记点09{}'.format('-'*9, '-'*10))
         # 判断退出，其中包含配置更新的函数
         judge_exit(content, prompt=None)
+        logger.debug('\n{}manager - main函数标记点10{}'.format('-'*9, '-'*10))
         # 查单词，播放音频
         lookup_content(content)
+        logger.debug('\n{}manager - main函数标记点11{}'.format('-'*9, '-'*10))
         audio_repeat(enabled=enabled, content=content)
+        logger.debug('\n{}manager - main函数标记点12{}'.format('-'*9, '-'*10))
 
 
 

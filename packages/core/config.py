@@ -41,7 +41,8 @@ def initialize_init():
     filename = path.own.init_filename()
     if path.path_exist(filename):
         return True
-    print('不存在用户设置，请按流程配置相应信息：')
+    if public.AUTHOR:
+        print('不存在用户设置，请按流程配置相应信息：')
     init = dict()
     init['user'] = dict()
     init['datas'] = list()
@@ -498,7 +499,7 @@ def check_config():
     logger.debug('程序到达：config.py-check_config函数')
     # 检查用户配置
     configuration = read_config()
-    # 检查开发者配置
+    # 检查开发者配置：该程序在当public.AUTHOR=True时，如果不存在签名文件，触发退出函数
     author_config = emails.read_author_config()
     return True
 

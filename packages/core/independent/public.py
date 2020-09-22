@@ -22,6 +22,8 @@ logger = logging.getLogger('main.public')
 # =================================
 # 全局调用该参数，DEBUG = True 时，不执行清屏
 DEBUG = False
+# 全局调用该参数，AUTHOR = False 时，程序将可以在无签名模式下运行，此时程序不会备份用户词库，也不会发送异常日志
+AUTHOR = True
 # =================================
 
 # 重写print函数，不兼容Py2(因为get)
@@ -142,8 +144,10 @@ def exit_program(prompt=None, pause=False):
         input(prompt if prompt is not None else '')
     elif prompt is not None:
         print(prompt)
+    logger.info('程序执行退出函数，将在日志记录关闭后终止程序')
     # 退出前关闭日志记录，写入所有该写入的数据
     logging.shutdown()
+    logger.info('日志记录已关闭，程序终止')
     sys.exit()
 
 
@@ -298,6 +302,26 @@ def retry_decorator(prompt=None,
     return decorator
 
 
+# 装饰器工厂之控制执行装饰器：用于在符合某种条件时执行函数
+# execute：当execute的布尔值为真时执行被装饰的函数，否则不执行
+# result：当 execute为真时，代替函数返回值的值
+# prompt：返回result前给用户的提示
+def execute_func(execute, result=None, prompt=None):
+    logger.debug('程序到达：public.py-execute_func函数')
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            if not execute:
+                logger.debug('控制执行装饰器跳过函数{}的执行，直接返回{}'.format(func.__name__, result))
+                if prompt is not None:
+                    print(prompt)
+                return result
+            else:
+                return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
 # 计算函数运行时间：用于评估算法效率
 # 注意：本装饰器可以装饰递归函数
 def timeit(func, count=set()):
@@ -334,7 +358,6 @@ def catch_exception(func, count=set()):
             result = func(*args, **kwargs)
         return result
     return wrapper
-
 
 
 # 检查路径是否存在，如果不存在，则创建后再返回该路径，否则直接返回

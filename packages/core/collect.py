@@ -190,6 +190,7 @@ def valid_username(username):
 
 
 # 从用户获取用户名
+@public.execute_func(execute=public.AUTHOR, result='user')
 def get_username(prompt=None):
     logger.debug('程序到达：collect.py-get_username函数')
     if prompt is None:
@@ -212,7 +213,7 @@ def get_username(prompt=None):
             prompt = '用户名格式错误，请重新输入：'
             continue
     else:
-        exit_program('次数用尽，已经退出！')
+        public.exit_program('次数用尽，已经退出！')
 
 
 # ---------------------------------
@@ -223,7 +224,7 @@ def valid_email(email):
     if not isinstance(email, str):
         return False
     if len(email) < 5:
-        # 最短的邮址应该至少有5个字母：a@b.c
+        # 最短的邮址应该至少有5个字符：a@b.c
         return False
     email_split = email.split('@')
     if len(email_split) == 2:
@@ -238,6 +239,7 @@ def valid_email(email):
 # 从用户获取邮箱
 # 返回：电子邮件地址
 # 异常返回：None
+@public.execute_func(execute=public.AUTHOR, result='x@x.x')
 def get_email(prompt=None):
     logger.debug('程序到达：collect.py-get_email函数')
     if prompt is None:
@@ -379,6 +381,7 @@ def manual_create_password(prompt=None):
 
 
 # 获取密码
+@public.execute_func(execute=public.AUTHOR, result='user')
 def get_password(prompt=None):
     logger.debug('程序到达：collect.py-get_password函数')
     if prompt is None:

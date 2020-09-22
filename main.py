@@ -14,13 +14,14 @@ from packages.core import log
 from packages.core.independent import public
 # =================================
 # 日志记录
-logger = log.get_logger(log_name='main', log_level='info')
+logger = log.get_logger(log_name='main', log_level=None)
 # =================================
 
 
 @public.catch_exception
 def cage_main():
     logger.debug('程序到达：main.py-cage_main函数')
+    logger.info('\n'+'*'*45)
     try:
         manager.main()
     except KeyboardInterrupt as e:
